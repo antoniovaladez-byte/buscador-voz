@@ -58,6 +58,10 @@
       margin-bottom: 20px;
     }
 
+    /* =====================================================
+       MICRÓFONO
+    ===================================================== */
+
     .mic-btn {
       width: 180px;
       height: 180px;
@@ -97,6 +101,10 @@
       font-size: 15px;
     }
 
+    /* =====================================================
+       SONIDO
+    ===================================================== */
+
     .sound-row {
       margin-top: 18px;
     }
@@ -114,6 +122,10 @@
     .sound-btn:hover {
       background: #eef2f7;
     }
+
+    /* =====================================================
+       INFORMACIÓN DE VOZ
+    ===================================================== */
 
     .speech-info {
       display: none;
@@ -141,6 +153,10 @@
       color: #003A8C;
       font-weight: bold;
     }
+
+    /* =====================================================
+       BÚSQUEDA ESCRITA
+    ===================================================== */
 
     .text-toggle {
       margin-top: 18px;
@@ -242,6 +258,10 @@
       padding: 0;
     }
 
+    /* =====================================================
+       ESTADO
+    ===================================================== */
+
     #estado {
       margin-top: 18px;
       text-align: center;
@@ -249,6 +269,10 @@
       color: #666;
       font-weight: bold;
     }
+
+    /* =====================================================
+       RESULTADOS
+    ===================================================== */
 
     .resultado {
       background: white;
@@ -315,6 +339,61 @@
       margin-top: 8px;
     }
 
+    /* =====================================================
+       AMBIGÜEDAD
+    ===================================================== */
+
+    .ambiguedad {
+      background: white;
+      margin-top: 15px;
+      padding: 24px;
+      border-radius: 18px;
+      border-left: 7px solid #ea580c;
+      box-shadow: 0 3px 10px rgba(0,0,0,.08);
+      text-align: center;
+    }
+
+    .ambiguedad-titulo {
+      font-size: 23px;
+      font-weight: 900;
+      color: #222;
+    }
+
+    .ambiguedad-texto {
+      color: #666;
+      margin-top: 7px;
+      font-size: 16px;
+    }
+
+    .ambiguedad-opciones {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .ambiguedad-btn {
+      border: 2px solid #003A8C;
+      background: white;
+      color: #003A8C;
+      border-radius: 14px;
+      padding: 13px 20px;
+      cursor: pointer;
+      font-size: 19px;
+      font-weight: 900;
+      min-width: 110px;
+    }
+
+    .ambiguedad-btn:hover {
+      background: #003A8C;
+      color: white;
+    }
+
+    /* =====================================================
+       ERROR
+    ===================================================== */
+
     .error {
       background: white;
       margin-top: 18px;
@@ -324,6 +403,10 @@
       text-align: center;
       font-weight: bold;
     }
+
+    /* =====================================================
+       MÓVIL
+    ===================================================== */
 
     @media(max-width: 700px) {
 
@@ -357,17 +440,28 @@
         font-size: 25px;
       }
 
+      .ambiguedad-opciones {
+        display: block;
+      }
+
+      .ambiguedad-btn {
+        width: 100%;
+        margin-top: 8px;
+      }
+
     }
 
   </style>
-
 </head>
+
 
 <body>
 
   <div class="header">
 
-    <h1>BUSCADOR DE UBICACIONES</h1>
+    <h1>
+      BUSCADOR DE UBICACIONES
+    </h1>
 
     <p>
       Proveedores • Rutas • Ubicaciones
@@ -482,6 +576,8 @@
     </div>
 
 
+    <!-- HISTORIAL -->
+
     <div
       id="historial"
       class="historial"
@@ -542,12 +638,7 @@
 
 
     // =====================================================
-    // CONTEXTO DE SESIÓN
-    //
-    // NO usamos localStorage.
-    //
-    // Si se recarga o cierra la página,
-    // este contexto desaparece.
+    // CONTEXTO TEMPORAL DE LA SESIÓN
     // =====================================================
 
     let contextoActual = null;
@@ -561,23 +652,17 @@
         !datos.resultados ||
         !datos.resultados.length
       ) {
-
         return;
-
       }
 
 
       contextoActual = {
 
         tipo:
-          String(
-            datos.tipo || ""
-          ),
+          String(datos.tipo || ""),
 
         valor:
-          String(
-            datos.valor || ""
-          ),
+          String(datos.valor || ""),
 
         resultados:
           datos.resultados.map(
@@ -586,34 +671,22 @@
               return {
 
                 ubicacion:
-                  String(
-                    r.ubicacion || ""
-                  ),
+                  String(r.ubicacion || ""),
 
                 proveedor:
-                  String(
-                    r.proveedor || ""
-                  ),
+                  String(r.proveedor || ""),
 
                 numeroProveedor:
-                  String(
-                    r.numeroProveedor || ""
-                  ),
+                  String(r.numeroProveedor || ""),
 
                 ruta:
-                  String(
-                    r.ruta || ""
-                  ),
+                  String(r.ruta || ""),
 
                 maximo:
-                  String(
-                    r.maximo || ""
-                  ),
+                  String(r.maximo || ""),
 
                 fechaActualizacion:
-                  String(
-                    r.fechaActualizacion || ""
-                  )
+                  String(r.fechaActualizacion || "")
 
               };
 
@@ -651,14 +724,10 @@
 
 
         const historial =
-          JSON.parse(
-            guardado
-          );
+          JSON.parse(guardado);
 
 
-        return Array.isArray(
-          historial
-        )
+        return Array.isArray(historial)
           ? historial
           : [];
 
@@ -672,9 +741,7 @@
     }
 
 
-    function guardarEnHistorial(
-      datos
-    ) {
+    function guardarEnHistorial(datos) {
 
       if (
         !datos ||
@@ -682,23 +749,17 @@
         !datos.tipo ||
         !datos.valor
       ) {
-
         return;
-
       }
 
 
       const nuevaBusqueda = {
 
         tipo:
-          String(
-            datos.tipo
-          ),
+          String(datos.tipo),
 
         valor:
-          String(
-            datos.valor
-          )
+          String(datos.valor)
 
       };
 
@@ -712,10 +773,8 @@
           function(item) {
 
             return !(
-              item.tipo ===
-                nuevaBusqueda.tipo &&
-              item.valor ===
-                nuevaBusqueda.valor
+              item.tipo === nuevaBusqueda.tipo &&
+              item.valor === nuevaBusqueda.valor
             );
 
           }
@@ -738,9 +797,7 @@
 
         localStorage.setItem(
           CLAVE_HISTORIAL,
-          JSON.stringify(
-            historial
-          )
+          JSON.stringify(historial)
         );
 
       } catch (error) {
@@ -836,9 +893,7 @@
     }
 
 
-    function etiquetaHistorial(
-      item
-    ) {
+    function etiquetaHistorial(item) {
 
       if (
         item.tipo === "UBICACION"
@@ -885,9 +940,14 @@
     }
 
 
-    async function repetirBusqueda(
-      item
-    ) {
+    // =====================================================
+    // REPETIR DESDE HISTORIAL
+    //
+    // IMPORTANTE:
+    // ahora SÍ responde por voz.
+    // =====================================================
+
+    async function repetirBusqueda(item) {
 
       if (
         "speechSynthesis" in window
@@ -914,7 +974,7 @@
 
       await consultarAPI(
         consulta,
-        false
+        true
       );
 
     }
@@ -1044,9 +1104,11 @@
     }
 
 
-    function hablar(
-      texto
-    ) {
+    // =====================================================
+    // HABLAR
+    // =====================================================
+
+    function hablar(texto) {
 
       if (!sonidoActivado) {
         return;
@@ -1090,9 +1152,7 @@
               voz.lang &&
               voz.lang
                 .toLowerCase()
-                .startsWith(
-                  "es-mx"
-                )
+                .startsWith("es-mx")
             );
 
           }
@@ -1107,9 +1167,7 @@
               voz.lang &&
               voz.lang
                 .toLowerCase()
-                .startsWith(
-                  "es"
-                )
+                .startsWith("es")
             );
 
           }
@@ -1403,7 +1461,7 @@
 
 
     // =====================================================
-    // PROCESAR ALTERNATIVAS
+    // PROCESAR ALTERNATIVAS DE VOZ
     // =====================================================
 
     async function procesarAlternativas(
@@ -1411,8 +1469,7 @@
     ) {
 
       // -----------------------------------------
-      // PRIMERO:
-      // ¿Es una pregunta sobre el contexto?
+      // 1. CONTEXTO CONVERSACIONAL
       // -----------------------------------------
 
       for (
@@ -1454,11 +1511,11 @@
 
 
       // -----------------------------------------
-      // SI NO:
-      // búsqueda normal contra catálogo.
+      // 2. BUSCAR CÓDIGO EN EL CATÁLOGO
       // -----------------------------------------
 
-      let mejor = null;
+      let coincidenciaExacta =
+        null;
 
 
       for (
@@ -1467,16 +1524,20 @@
         i++
       ) {
 
-        const candidato =
-          detectarContraCatalogo(
+        const deteccion =
+          detectarConsultaSegura(
             alternativas[i]
           );
 
 
-        if (candidato) {
+        if (
+          deteccion &&
+          deteccion.estado ===
+          "EXACTA"
+        ) {
 
-          mejor =
-            candidato;
+          coincidenciaExacta =
+            deteccion.opcion;
 
           break;
 
@@ -1485,26 +1546,22 @@
       }
 
 
-      if (mejor) {
-
-        const consulta =
-          mejor.tipo +
-          " " +
-          mejor.valor;
-
+      if (coincidenciaExacta) {
 
         document
           .getElementById(
             "interpretado"
           )
           .textContent =
-          mejor.tipo +
+          coincidenciaExacta.tipo +
           ": " +
-          mejor.valor;
+          coincidenciaExacta.valor;
 
 
         await consultarAPI(
-          consulta,
+          coincidenciaExacta.tipo +
+          " " +
+          coincidenciaExacta.valor,
           true
         );
 
@@ -1515,6 +1572,61 @@
 
       }
 
+
+      // -----------------------------------------
+      // 3. BUSCAR OPCIONES APROXIMADAS
+      // -----------------------------------------
+
+      let opciones = [];
+
+
+      for (
+        let i = 0;
+        i < alternativas.length;
+        i++
+      ) {
+
+        const deteccion =
+          detectarConsultaSegura(
+            alternativas[i]
+          );
+
+
+        if (
+          deteccion &&
+          deteccion.estado ===
+          "AMBIGUA"
+        ) {
+
+          opciones =
+            deteccion.opciones;
+
+          break;
+
+        }
+
+      }
+
+
+      if (
+        opciones.length
+      ) {
+
+        mostrarAmbiguedad(
+          opciones
+        );
+
+
+        restaurarMicrofono();
+
+        return;
+
+      }
+
+
+      // -----------------------------------------
+      // 4. ÚLTIMO INTENTO CON EL BACKEND
+      // -----------------------------------------
 
       const normalizado =
         normalizarVoz(
@@ -1542,7 +1654,751 @@
 
 
     // =====================================================
-    // DETECTAR PREGUNTA CONTEXTUAL
+    // DETECCIÓN SEGURA
+    // =====================================================
+
+    function detectarConsultaSegura(
+      texto
+    ) {
+
+      const normal =
+        normalizarParaComparar(
+          texto
+        );
+
+
+      let tipoPreferido =
+        null;
+
+
+      if (
+        /\bUBICACION\b/.test(
+          normal
+        )
+      ) {
+
+        tipoPreferido =
+          "UBICACION";
+
+      } else if (
+        /\bRUTA\b/.test(
+          normal
+        )
+      ) {
+
+        tipoPreferido =
+          "RUTA";
+
+      } else if (
+        /\bPROVEEDOR\b/.test(
+          normal
+        )
+      ) {
+
+        tipoPreferido =
+          "PROVEEDOR";
+
+      }
+
+
+      const exactas =
+        buscarCoincidenciasExactas(
+          texto,
+          tipoPreferido
+        );
+
+
+      if (
+        exactas.length === 1
+      ) {
+
+        return {
+
+          estado:
+            "EXACTA",
+
+          opcion:
+            exactas[0]
+
+        };
+
+      }
+
+
+      if (
+        exactas.length > 1
+      ) {
+
+        return {
+
+          estado:
+            "AMBIGUA",
+
+          opciones:
+            exactas.slice(0, 4)
+
+        };
+
+      }
+
+
+      const aproximadas =
+        buscarCoincidenciasAproximadas(
+          texto,
+          tipoPreferido
+        );
+
+
+      if (!aproximadas.length) {
+
+        return null;
+
+      }
+
+
+      // Si la mejor opción es claramente
+      // superior a la segunda, la aceptamos.
+
+      if (
+        aproximadas.length === 1
+      ) {
+
+        if (
+          aproximadas[0].distancia === 0
+        ) {
+
+          return {
+
+            estado:
+              "EXACTA",
+
+            opcion:
+              aproximadas[0]
+
+          };
+
+        }
+
+
+        // Para coincidencias aproximadas
+        // preferimos confirmar.
+        return {
+
+          estado:
+            "AMBIGUA",
+
+          opciones:
+            aproximadas.slice(0, 3)
+
+        };
+
+      }
+
+
+      const mejor =
+        aproximadas[0];
+
+
+      const segunda =
+        aproximadas[1];
+
+
+      // Si existe una diferencia clara
+      // y solo hubo un pequeño error,
+      // se puede aceptar directamente.
+
+      if (
+        mejor.distancia <= 1 &&
+        segunda.distancia >=
+          mejor.distancia + 2
+      ) {
+
+        return {
+
+          estado:
+            "EXACTA",
+
+          opcion:
+            mejor
+
+        };
+
+      }
+
+
+      return {
+
+        estado:
+          "AMBIGUA",
+
+        opciones:
+          aproximadas.slice(0, 3)
+
+      };
+
+    }
+
+
+    // =====================================================
+    // COINCIDENCIAS EXACTAS
+    // =====================================================
+
+    function buscarCoincidenciasExactas(
+      texto,
+      tipoPreferido
+    ) {
+
+      const candidatos =
+        generarCandidatos(
+          texto
+        );
+
+
+      const candidatosSet =
+        new Set(
+          candidatos.map(
+            function(c) {
+
+              return String(c)
+                .toUpperCase()
+                .replace(
+                  /[^A-Z0-9]/g,
+                  ""
+                );
+
+            }
+          )
+        );
+
+
+      const resultados = [];
+
+
+      obtenerEntradasCatalogo(
+        tipoPreferido
+      )
+        .forEach(
+          function(entrada) {
+
+            const codigo =
+              limpiarCodigo(
+                entrada.valor
+              );
+
+
+            if (
+              candidatosSet.has(
+                codigo
+              )
+            ) {
+
+              resultados.push(
+                entrada
+              );
+
+            }
+
+          }
+        );
+
+
+      return eliminarOpcionesDuplicadas(
+        resultados
+      );
+
+    }
+
+
+    // =====================================================
+    // COINCIDENCIAS APROXIMADAS
+    // =====================================================
+
+    function buscarCoincidenciasAproximadas(
+      texto,
+      tipoPreferido
+    ) {
+
+      const candidatos =
+        generarCandidatos(
+          texto
+        )
+          .map(
+            function(c) {
+
+              return limpiarCodigo(
+                c
+              );
+
+            }
+          )
+          .filter(
+            function(c) {
+
+              return c.length >= 2;
+
+            }
+          );
+
+
+      if (!candidatos.length) {
+
+        return [];
+
+      }
+
+
+      const resultados = [];
+
+
+      obtenerEntradasCatalogo(
+        tipoPreferido
+      )
+        .forEach(
+          function(entrada) {
+
+            const codigo =
+              limpiarCodigo(
+                entrada.valor
+              );
+
+
+            if (!codigo) {
+              return;
+            }
+
+
+            let mejorDistancia =
+              Infinity;
+
+
+            candidatos.forEach(
+              function(candidato) {
+
+                // Evitar comparar palabras
+                // enormes con códigos pequeños.
+
+                if (
+                  Math.abs(
+                    candidato.length -
+                    codigo.length
+                  ) > 2
+                ) {
+
+                  return;
+
+                }
+
+
+                const distancia =
+                  distanciaLevenshtein(
+                    codigo,
+                    candidato
+                  );
+
+
+                if (
+                  distancia <
+                  mejorDistancia
+                ) {
+
+                  mejorDistancia =
+                    distancia;
+
+                }
+
+              }
+            );
+
+
+            const limite =
+              codigo.length >= 6
+                ? 2
+                : 1;
+
+
+            if (
+              mejorDistancia <=
+              limite
+            ) {
+
+              resultados.push({
+
+                tipo:
+                  entrada.tipo,
+
+                valor:
+                  entrada.valor,
+
+                distancia:
+                  mejorDistancia
+
+              });
+
+            }
+
+          }
+        );
+
+
+      resultados.sort(
+        function(a, b) {
+
+          if (
+            a.distancia !==
+            b.distancia
+          ) {
+
+            return (
+              a.distancia -
+              b.distancia
+            );
+
+          }
+
+
+          return String(a.valor)
+            .localeCompare(
+              String(b.valor)
+            );
+
+        }
+      );
+
+
+      return eliminarOpcionesDuplicadas(
+        resultados
+      );
+
+    }
+
+
+    // =====================================================
+    // ENTRADAS DEL CATÁLOGO
+    // =====================================================
+
+    function obtenerEntradasCatalogo(
+      tipoPreferido
+    ) {
+
+      const entradas = [];
+
+
+      function agregar(
+        tipo,
+        lista
+      ) {
+
+        if (
+          tipoPreferido &&
+          tipo !== tipoPreferido
+        ) {
+
+          return;
+
+        }
+
+
+        (lista || [])
+          .forEach(
+            function(valor) {
+
+              entradas.push({
+
+                tipo:
+                  tipo,
+
+                valor:
+                  valor
+
+              });
+
+            }
+          );
+
+      }
+
+
+      agregar(
+        "UBICACION",
+        catalogo.ubicaciones
+      );
+
+
+      agregar(
+        "RUTA",
+        catalogo.rutas
+      );
+
+
+      agregar(
+        "PROVEEDOR",
+        catalogo.proveedores
+      );
+
+
+      agregar(
+        "NUMERO",
+        catalogo.numerosProveedor
+      );
+
+
+      return entradas;
+
+    }
+
+
+    function eliminarOpcionesDuplicadas(
+      opciones
+    ) {
+
+      const mapa =
+        new Map();
+
+
+      opciones.forEach(
+        function(opcion) {
+
+          const clave =
+            opcion.tipo +
+            "|" +
+            opcion.valor;
+
+
+          if (
+            !mapa.has(clave)
+          ) {
+
+            mapa.set(
+              clave,
+              opcion
+            );
+
+          }
+
+        }
+      );
+
+
+      return Array.from(
+        mapa.values()
+      );
+
+    }
+
+
+    // =====================================================
+    // MOSTRAR AMBIGÜEDAD
+    // =====================================================
+
+    function mostrarAmbiguedad(
+      opciones
+    ) {
+
+      const contenedor =
+        document.getElementById(
+          "resultados"
+        );
+
+
+      contenedor.innerHTML = "";
+
+
+      const tarjeta =
+        document.createElement(
+          "div"
+        );
+
+
+      tarjeta.className =
+        "ambiguedad";
+
+
+      const titulo =
+        document.createElement(
+          "div"
+        );
+
+
+      titulo.className =
+        "ambiguedad-titulo";
+
+
+      titulo.textContent =
+        "No estoy completamente seguro";
+
+
+      const texto =
+        document.createElement(
+          "div"
+        );
+
+
+      texto.className =
+        "ambiguedad-texto";
+
+
+      texto.textContent =
+        "¿Te refieres a una de estas opciones?";
+
+
+      const zonaOpciones =
+        document.createElement(
+          "div"
+        );
+
+
+      zonaOpciones.className =
+        "ambiguedad-opciones";
+
+
+      opciones.forEach(
+        function(opcion) {
+
+          const boton =
+            document.createElement(
+              "button"
+            );
+
+
+          boton.className =
+            "ambiguedad-btn";
+
+
+          boton.textContent =
+            opcion.valor;
+
+
+          boton.addEventListener(
+            "click",
+            function() {
+
+              seleccionarAmbiguedad(
+                opcion
+              );
+
+            }
+          );
+
+
+          zonaOpciones.appendChild(
+            boton
+          );
+
+        }
+      );
+
+
+      tarjeta.appendChild(
+        titulo
+      );
+
+
+      tarjeta.appendChild(
+        texto
+      );
+
+
+      tarjeta.appendChild(
+        zonaOpciones
+      );
+
+
+      contenedor.appendChild(
+        tarjeta
+      );
+
+
+      document
+        .getElementById(
+          "interpretado"
+        )
+        .textContent =
+        "NECESITO CONFIRMACIÓN";
+
+
+      if (sonidoActivado) {
+
+        const nombres =
+          opciones
+            .slice(0, 3)
+            .map(
+              function(opcion) {
+
+                return decirCodigo(
+                  opcion.valor
+                );
+
+              }
+            );
+
+
+        let frase =
+          "No estoy completamente seguro. ";
+
+
+        if (
+          nombres.length === 1
+        ) {
+
+          frase +=
+            "¿Te refieres a " +
+            nombres[0] +
+            "?";
+
+        } else {
+
+          frase +=
+            "¿Te refieres a " +
+            nombres.join(" o ") +
+            "?";
+
+        }
+
+
+        hablar(
+          frase
+        );
+
+      }
+
+    }
+
+
+    async function seleccionarAmbiguedad(
+      opcion
+    ) {
+
+      if (
+        "speechSynthesis" in window
+      ) {
+
+        window.speechSynthesis.cancel();
+
+      }
+
+
+      document
+        .getElementById(
+          "interpretado"
+        )
+        .textContent =
+        opcion.tipo +
+        ": " +
+        opcion.valor;
+
+
+      await consultarAPI(
+        opcion.tipo +
+        " " +
+        opcion.valor,
+        true
+      );
+
+    }
+
+
+    // =====================================================
+    // CONTEXTO CONVERSACIONAL
     // =====================================================
 
     function detectarPreguntaContextual(
@@ -1562,8 +2418,6 @@
         );
 
 
-      // RUTA
-
       if (
         /\bRUTA\b/.test(t) &&
         (
@@ -1579,8 +2433,6 @@
       }
 
 
-      // MÁXIMO
-
       if (
         /\bMAXIMO\b/.test(t) ||
         /\bMAXIMA\b/.test(t) ||
@@ -1592,8 +2444,6 @@
       }
 
 
-      // NÚMERO DE PROVEEDOR
-
       if (
         /\bNUMERO\b/.test(t) &&
         /\bPROVEEDOR\b/.test(t)
@@ -1603,8 +2453,6 @@
 
       }
 
-
-      // FECHA / ACTUALIZACIÓN
 
       if (
         /\bACTUALIZ/.test(t) ||
@@ -1616,8 +2464,6 @@
 
       }
 
-
-      // UBICACIÓN
 
       if (
         /\bUBICACION\b/.test(t) &&
@@ -1633,8 +2479,6 @@
 
       }
 
-
-      // PROVEEDOR
 
       if (
         /\bPROVEEDOR\b/.test(t) &&
@@ -1655,10 +2499,6 @@
 
     }
 
-
-    // =====================================================
-    // RESPONDER USANDO EL CONTEXTO
-    // =====================================================
 
     function responderPreguntaContextual(
       campo,
@@ -1801,7 +2641,7 @@
 
 
       const valores =
-        obtenerValoresUnicos(
+        obtenerUnicos(
           resultados,
           propiedad
         );
@@ -1833,10 +2673,6 @@
       }
 
 
-      // -----------------------------------------
-      // UNA SOLA RESPUESTA
-      // -----------------------------------------
-
       if (
         valores.length === 1
       ) {
@@ -1860,8 +2696,7 @@
           if (
             campo === "RUTA" ||
             campo === "UBICACION" ||
-            campo === "PROVEEDOR" ||
-            campo === "NUMERO"
+            campo === "PROVEEDOR"
           ) {
 
             valorHablado =
@@ -1887,19 +2722,9 @@
       }
 
 
-      // -----------------------------------------
-      // VARIAS RESPUESTAS
-      // -----------------------------------------
-
-      const valoresVisibles =
-        valores.join(
-          ", "
-        );
-
-
       mostrarRespuestaContextual(
         titulo,
-        valoresVisibles,
+        valores.join(", "),
         "Hay varios valores en el resultado anterior."
       );
 
@@ -1917,8 +2742,7 @@
                 if (
                   campo === "RUTA" ||
                   campo === "UBICACION" ||
-                  campo === "PROVEEDOR" ||
-                  campo === "NUMERO"
+                  campo === "PROVEEDOR"
                 ) {
 
                   return decirCodigo(
@@ -1954,10 +2778,6 @@
 
     }
 
-
-    // =====================================================
-    // MOSTRAR RESPUESTA CONTEXTUAL
-    // =====================================================
 
     function mostrarRespuestaContextual(
       titulo,
@@ -2053,273 +2873,6 @@
 
 
     // =====================================================
-    // DETECTAR CONTRA CATÁLOGO
-    // =====================================================
-
-    function detectarContraCatalogo(
-      texto
-    ) {
-
-      const normal =
-        normalizarParaComparar(
-          texto
-        );
-
-
-      const tieneUbicacion =
-        /\bUBICACION\b/.test(
-          normal
-        );
-
-
-      const tieneRuta =
-        /\bRUTA\b/.test(
-          normal
-        );
-
-
-      const tieneProveedor =
-        /\bPROVEEDOR\b/.test(
-          normal
-        );
-
-
-      const ubicacion =
-        encontrarMejorCodigo(
-          texto,
-          catalogo.ubicaciones
-        );
-
-
-      if (
-        ubicacion &&
-        (
-          tieneUbicacion ||
-          (
-            !tieneRuta &&
-            !tieneProveedor
-          )
-        )
-      ) {
-
-        return {
-
-          tipo: "UBICACION",
-          valor: ubicacion
-
-        };
-
-      }
-
-
-      const ruta =
-        encontrarMejorCodigo(
-          texto,
-          catalogo.rutas
-        );
-
-
-      if (
-        ruta &&
-        (
-          tieneRuta ||
-          !tieneProveedor
-        )
-      ) {
-
-        return {
-
-          tipo: "RUTA",
-          valor: ruta
-
-        };
-
-      }
-
-
-      const proveedor =
-        encontrarMejorCodigo(
-          texto,
-          catalogo.proveedores
-        );
-
-
-      if (proveedor) {
-
-        return {
-
-          tipo: "PROVEEDOR",
-          valor: proveedor
-
-        };
-
-      }
-
-
-      const numero =
-        encontrarMejorCodigo(
-          texto,
-          catalogo.numerosProveedor
-        );
-
-
-      if (numero) {
-
-        return {
-
-          tipo: "NUMERO",
-          valor: numero
-
-        };
-
-      }
-
-
-      return null;
-
-    }
-
-
-    // =====================================================
-    // ENCONTRAR MEJOR CÓDIGO
-    // =====================================================
-
-    function encontrarMejorCodigo(
-      texto,
-      lista
-    ) {
-
-      if (
-        !lista ||
-        !lista.length
-      ) {
-
-        return null;
-
-      }
-
-
-      const fraseCompacta =
-        compactarVoz(
-          texto
-        );
-
-
-      const candidatos =
-        generarCandidatos(
-          texto
-        );
-
-
-      let mejor = null;
-      let mejorPuntaje = Infinity;
-
-
-      for (
-        let i = 0;
-        i < lista.length;
-        i++
-      ) {
-
-        const codigo =
-          String(
-            lista[i]
-          )
-            .toUpperCase()
-            .replace(
-              /[^A-Z0-9]/g,
-              ""
-            );
-
-
-        if (!codigo) {
-          continue;
-        }
-
-
-        if (
-          fraseCompacta.includes(
-            codigo
-          )
-        ) {
-
-          return lista[i];
-
-        }
-
-
-        for (
-          let j = 0;
-          j < candidatos.length;
-          j++
-        ) {
-
-          const candidato =
-            candidatos[j];
-
-
-          const distancia =
-            distanciaLevenshtein(
-              codigo,
-              candidato
-            );
-
-
-          if (
-            distancia <
-            mejorPuntaje
-          ) {
-
-            mejorPuntaje =
-              distancia;
-
-            mejor =
-              lista[i];
-
-          }
-
-        }
-
-      }
-
-
-      if (mejor) {
-
-        const longitud =
-          String(
-            mejor
-          )
-            .replace(
-              /[^A-Z0-9]/g,
-              ""
-            )
-            .length;
-
-
-        const limite =
-          longitud >= 5
-            ? 2
-            : 1;
-
-
-        if (
-          mejorPuntaje <=
-          limite
-        ) {
-
-          return mejor;
-
-        }
-
-      }
-
-
-      return null;
-
-    }
-
-
-    // =====================================================
     // GENERAR CANDIDATOS
     // =====================================================
 
@@ -2331,38 +2884,31 @@
         new Set();
 
 
-      const compactado =
-        compactarVoz(
+      const normal =
+        normalizarVoz(
           texto
         );
-
-
-      if (compactado) {
-
-        candidatos.add(
-          compactado
-        );
-
-      }
 
 
       const palabras =
-        normalizarVoz(
-          texto
-        ).split(" ");
+        normal.split(" ")
+          .filter(Boolean);
 
+
+      // Cada palabra individual.
 
       palabras.forEach(
         function(palabra) {
 
           const limpia =
-            palabra.replace(
-              /[^A-Z0-9]/g,
-              ""
+            limpiarCodigo(
+              palabra
             );
 
 
-          if (limpia) {
+          if (
+            limpia.length >= 2
+          ) {
 
             candidatos.add(
               limpia
@@ -2373,6 +2919,10 @@
         }
       );
 
+
+      // Combinaciones de palabras.
+      // Muy útil cuando SpeechRecognition
+      // devuelve "S R K M X".
 
       for (
         let inicio = 0;
@@ -2386,19 +2936,19 @@
         for (
           let fin = inicio;
           fin < palabras.length &&
-          fin < inicio + 6;
+          fin < inicio + 7;
           fin++
         ) {
 
           acumulado +=
-            palabras[fin]
-              .replace(
-                /[^A-Z0-9]/g,
-                ""
-              );
+            limpiarCodigo(
+              palabras[fin]
+            );
 
 
-          if (acumulado) {
+          if (
+            acumulado.length >= 2
+          ) {
 
             candidatos.add(
               acumulado
@@ -2407,6 +2957,27 @@
           }
 
         }
+
+      }
+
+
+      // También generamos una versión
+      // quitando palabras normales
+      // de las consultas.
+
+      const compacto =
+        compactarVoz(
+          texto
+        );
+
+
+      if (
+        compacto.length >= 2
+      ) {
+
+        candidatos.add(
+          compacto
+        );
 
       }
 
@@ -2426,33 +2997,41 @@
       texto
     ) {
 
-      const normal =
-        normalizarVoz(
-          texto
-        );
-
-
-      return normal
-        .replace(/\bQUE\b/g, "")
-        .replace(/\bHAY\b/g, "")
-        .replace(/\bDONDE\b/g, "")
-        .replace(/\bESTA\b/g, "")
-        .replace(/\bESTAN\b/g, "")
-        .replace(/\bEL\b/g, "")
-        .replace(/\bLA\b/g, "")
-        .replace(/\bLOS\b/g, "")
-        .replace(/\bLAS\b/g, "")
-        .replace(/\bEN\b/g, "")
-        .replace(/\bUBICACION\b/g, "")
-        .replace(/\bPROVEEDOR\b/g, "")
-        .replace(/\bRUTA\b/g, "")
+      return normalizarVoz(
+        texto
+      )
+        .replace(/\bQUE\b/g, " ")
+        .replace(/\bHAY\b/g, " ")
+        .replace(/\bDONDE\b/g, " ")
+        .replace(/\bESTA\b/g, " ")
+        .replace(/\bESTAN\b/g, " ")
+        .replace(/\bEL\b/g, " ")
+        .replace(/\bLA\b/g, " ")
+        .replace(/\bLOS\b/g, " ")
+        .replace(/\bLAS\b/g, " ")
+        .replace(/\bEN\b/g, " ")
+        .replace(/\bUN\b/g, " ")
+        .replace(/\bUNA\b/g, " ")
+        .replace(/\bDE\b/g, " ")
+        .replace(/\bDEL\b/g, " ")
+        .replace(/\bDAME\b/g, " ")
+        .replace(/\bBUSCA\b/g, " ")
+        .replace(/\bBUSCAME\b/g, " ")
+        .replace(/\bNECESITO\b/g, " ")
+        .replace(/\bQUIERO\b/g, " ")
+        .replace(/\bUBICACION\b/g, " ")
+        .replace(/\bPROVEEDOR\b/g, " ")
+        .replace(/\bRUTA\b/g, " ")
+        .replace(/\bNUMERO\b/g, " ")
+        .replace(/\bPOR\b/g, " ")
+        .replace(/\bFAVOR\b/g, " ")
         .replace(/[^A-Z0-9]/g, "");
 
     }
 
 
     // =====================================================
-    // NORMALIZAR PARA COMPARAR
+    // NORMALIZACIÓN
     // =====================================================
 
     function normalizarParaComparar(
@@ -2475,10 +3054,6 @@
 
     }
 
-
-    // =====================================================
-    // NORMALIZAR VOZ
-    // =====================================================
 
     function normalizarVoz(
       texto
@@ -2571,7 +3146,6 @@
 
         "CERO": "0",
         "UNO": "1",
-        "UN": "1",
         "DOS": "2",
         "TRES": "3",
         "CUATRO": "4",
@@ -2676,87 +3250,7 @@
       }
 
 
-      t =
-        convertidas.join(
-          " "
-        );
-
-
-      const partes =
-        t.split(
-          " "
-        );
-
-
-      const resultado = [];
-
-      let acumulador = "";
-
-
-      function vaciar() {
-
-        if (acumulador) {
-
-          resultado.push(
-            acumulador
-          );
-
-          acumulador = "";
-
-        }
-
-      }
-
-
-      for (
-        let i = 0;
-        i < partes.length;
-        i++
-      ) {
-
-        const p =
-          partes[i];
-
-
-        if (
-          /^[A-Z]$/.test(p)
-        ) {
-
-          acumulador += p;
-
-          continue;
-
-        }
-
-
-        if (
-          /^\d{1,3}$/.test(p) &&
-          acumulador
-        ) {
-
-          acumulador += p;
-
-          vaciar();
-
-          continue;
-
-        }
-
-
-        vaciar();
-
-
-        resultado.push(
-          p
-        );
-
-      }
-
-
-      vaciar();
-
-
-      return resultado
+      return convertidas
         .join(" ")
         .replace(
           /\s+/g,
@@ -2767,8 +3261,38 @@
     }
 
 
+    function limpiarCodigo(
+      texto
+    ) {
+
+      return String(
+        texto || ""
+      )
+        .toUpperCase()
+        .replace(
+          /[^A-Z0-9]/g,
+          ""
+        );
+
+    }
+
+
+    function quitarAcentos(
+      texto
+    ) {
+
+      return String(texto)
+        .normalize("NFD")
+        .replace(
+          /[\u0300-\u036f]/g,
+          ""
+        );
+
+    }
+
+
     // =====================================================
-    // LEVENSHTEIN
+    // DISTANCIA LEVENSHTEIN
     // =====================================================
 
     function distanciaLevenshtein(
@@ -2777,14 +3301,10 @@
     ) {
 
       a =
-        String(
-          a || ""
-        );
+        String(a || "");
 
       b =
-        String(
-          b || ""
-        );
+        String(b || "");
 
 
       const matriz = [];
@@ -2858,29 +3378,7 @@
 
 
     // =====================================================
-    // QUITAR ACENTOS
-    // =====================================================
-
-    function quitarAcentos(
-      texto
-    ) {
-
-      return String(
-        texto
-      )
-        .normalize(
-          "NFD"
-        )
-        .replace(
-          /[\u0300-\u036f]/g,
-          ""
-        );
-
-    }
-
-
-    // =====================================================
-    // BUSCAR ESCRIBIENDO
+    // BÚSQUEDA ESCRITA
     // =====================================================
 
     async function buscarEscrito() {
@@ -2907,9 +3405,6 @@
         "none";
 
 
-      // También permitimos contexto
-      // mediante escritura.
-
       const contextual =
         detectarPreguntaContextual(
           pregunta
@@ -2921,6 +3416,48 @@
         responderPreguntaContextual(
           contextual,
           false
+        );
+
+        return;
+
+      }
+
+
+      // Para escritura intentamos primero
+      // reconocer un código del catálogo.
+
+      const deteccion =
+        detectarConsultaSegura(
+          pregunta
+        );
+
+
+      if (
+        deteccion &&
+        deteccion.estado ===
+        "EXACTA"
+      ) {
+
+        await consultarAPI(
+          deteccion.opcion.tipo +
+          " " +
+          deteccion.opcion.valor,
+          false
+        );
+
+        return;
+
+      }
+
+
+      if (
+        deteccion &&
+        deteccion.estado ===
+        "AMBIGUA"
+      ) {
+
+        mostrarAmbiguedad(
+          deteccion.opciones
         );
 
         return;
@@ -2942,7 +3479,7 @@
 
     async function consultarAPI(
       consulta,
-      vieneDeVoz
+      debeHablar
     ) {
 
       const estado =
@@ -2961,7 +3498,8 @@
         "Buscando...";
 
 
-      contenedor.innerHTML = "";
+      contenedor.innerHTML =
+        "";
 
 
       try {
@@ -2994,7 +3532,8 @@
           await respuesta.json();
 
 
-        estado.textContent = "";
+        estado.textContent =
+          "";
 
 
         if (!datos.ok) {
@@ -3009,7 +3548,7 @@
           );
 
 
-          if (vieneDeVoz) {
+          if (debeHablar) {
 
             hablar(
               "Ocurrió un error al realizar la búsqueda."
@@ -3030,7 +3569,7 @@
           );
 
 
-          if (vieneDeVoz) {
+          if (debeHablar) {
 
             hablar(
               "No encontré información para esa consulta."
@@ -3044,46 +3583,22 @@
         }
 
 
-        if (
-          vieneDeVoz &&
-          datos.tipo &&
-          datos.valor
-        ) {
-
-          document
-            .getElementById(
-              "interpretado"
-            )
-            .textContent =
-            datos.tipo +
-            ": " +
-            datos.valor;
-
-        }
-
-
         mostrarResultados(
           datos
         );
 
-
-        // Guardamos búsqueda permanente
-        // en historial.
 
         guardarEnHistorial(
           datos
         );
 
 
-        // Guardamos resultado temporal
-        // para conversación.
-
         guardarContexto(
           datos
         );
 
 
-        if (vieneDeVoz) {
+        if (debeHablar) {
 
           responderConVoz(
             datos
@@ -3094,7 +3609,8 @@
 
       } catch (error) {
 
-        estado.textContent = "";
+        estado.textContent =
+          "";
 
 
         mostrarError(
@@ -3102,7 +3618,7 @@
         );
 
 
-        if (vieneDeVoz) {
+        if (debeHablar) {
 
           hablar(
             "No fue posible consultar la base de datos."
@@ -3121,7 +3637,7 @@
 
 
     // =====================================================
-    // RESPUESTA HABLADA DE BÚSQUEDA NORMAL
+    // RESPUESTA HABLADA
     // =====================================================
 
     function responderConVoz(
@@ -3132,9 +3648,7 @@
         !datos.resultados ||
         !datos.resultados.length
       ) {
-
         return;
-
       }
 
 
@@ -3153,6 +3667,10 @@
           datos.valor || ""
         );
 
+
+      // -----------------------------------------
+      // UBICACIÓN
+      // -----------------------------------------
 
       if (
         tipo === "UBICACION"
@@ -3204,45 +3722,54 @@
             frase
           );
 
-
           return;
 
         }
 
 
         const proveedores =
-          resultados
-            .map(
-              function(r) {
-
-                return decirCodigo(
-                  r.proveedor
-                );
-
-              }
-            )
-            .join(
-              ", "
-            );
+          obtenerUnicos(
+            resultados,
+            "proveedor"
+          );
 
 
-        hablar(
+        let frase =
           "En la ubicación " +
           decirCodigo(
             valor
           ) +
           " encontré " +
           resultados.length +
-          " registros. " +
-          proveedores +
-          "."
-        );
+          " registros.";
 
+
+        if (
+          proveedores.length <= 5
+        ) {
+
+          frase +=
+            " Proveedores: " +
+            proveedores
+              .map(decirCodigo)
+              .join(", ") +
+            ".";
+
+        }
+
+
+        hablar(
+          frase
+        );
 
         return;
 
       }
 
+
+      // -----------------------------------------
+      // PROVEEDOR / NÚMERO
+      // -----------------------------------------
 
       if (
         tipo === "PROVEEDOR" ||
@@ -3256,6 +3783,11 @@
           );
 
 
+        const proveedor =
+          resultados[0].proveedor ||
+          valor;
+
+
         if (
           ubicaciones.length === 1
         ) {
@@ -3263,7 +3795,7 @@
           hablar(
             "El proveedor " +
             decirCodigo(
-              resultados[0].proveedor
+              proveedor
             ) +
             " se encuentra en la ubicación " +
             decirCodigo(
@@ -3271,7 +3803,6 @@
             ) +
             "."
           );
-
 
           return;
 
@@ -3285,19 +3816,16 @@
           hablar(
             "El proveedor " +
             decirCodigo(
-              resultados[0].proveedor
+              proveedor
             ) +
             " se encuentra en " +
             ubicaciones.length +
             " ubicaciones: " +
             ubicaciones
-              .map(
-                decirCodigo
-              )
+              .map(decirCodigo)
               .join(", ") +
             "."
           );
-
 
           return;
 
@@ -3309,16 +3837,19 @@
           ubicaciones.length +
           " ubicaciones para el proveedor " +
           decirCodigo(
-            resultados[0].proveedor
+            proveedor
           ) +
           ". Los resultados están en pantalla."
         );
-
 
         return;
 
       }
 
+
+      // -----------------------------------------
+      // RUTA
+      // -----------------------------------------
 
       if (
         tipo === "RUTA"
@@ -3344,13 +3875,10 @@
             ubicaciones.length +
             " ubicaciones: " +
             ubicaciones
-              .map(
-                decirCodigo
-              )
+              .map(decirCodigo)
               .join(", ") +
             "."
           );
-
 
           return;
 
@@ -3367,7 +3895,6 @@
           ". Los resultados están en pantalla."
         );
 
-
         return;
 
       }
@@ -3383,7 +3910,7 @@
 
 
     // =====================================================
-    // PRONUNCIAR CÓDIGOS
+    // PRONUNCIACIÓN NATURAL DE CÓDIGOS
     // =====================================================
 
     function decirCodigo(
@@ -3403,8 +3930,66 @@
       }
 
 
+      // -----------------------------------------
+      // SOLO NÚMEROS
+      //
+      // 17422 se pronuncia como número,
+      // no como 1 7 4 2 2.
+      // -----------------------------------------
+
       if (
-        /^[A-Z0-9]+$/.test(
+        /^\d+$/.test(
+          codigo
+        )
+      ) {
+
+        return codigo;
+
+      }
+
+
+      // -----------------------------------------
+      // LETRAS + NÚMEROS
+      //
+      // C4    -> C cuatro
+      // DEN28 -> D E N veintiocho
+      // -----------------------------------------
+
+      const combinado =
+        codigo.match(
+          /^([A-Z]+)(\d+)$/
+        );
+
+
+      if (combinado) {
+
+        const letras =
+          combinado[1]
+            .split("")
+            .join(" ");
+
+
+        const numero =
+          combinado[2];
+
+
+        return (
+          letras +
+          " " +
+          numero
+        );
+
+      }
+
+
+      // -----------------------------------------
+      // SOLO LETRAS
+      //
+      // SRKMX -> S R K M X
+      // -----------------------------------------
+
+      if (
+        /^[A-Z]+$/.test(
           codigo
         )
       ) {
@@ -3422,7 +4007,7 @@
 
 
     // =====================================================
-    // OBTENER ÚNICOS
+    // VALORES ÚNICOS
     // =====================================================
 
     function obtenerUnicos(
@@ -3462,19 +4047,6 @@
     }
 
 
-    function obtenerValoresUnicos(
-      resultados,
-      campo
-    ) {
-
-      return obtenerUnicos(
-        resultados,
-        campo
-      );
-
-    }
-
-
     // =====================================================
     // MOSTRAR RESULTADOS
     // =====================================================
@@ -3487,6 +4059,10 @@
         document.getElementById(
           "resultados"
         );
+
+
+      contenedor.innerHTML =
+        "";
 
 
       datos.resultados.forEach(
@@ -3605,7 +4181,8 @@
         );
 
 
-      contenedor.innerHTML = "";
+      contenedor.innerHTML =
+        "";
 
 
       const error =
