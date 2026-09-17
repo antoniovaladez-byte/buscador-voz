@@ -17,16 +17,17 @@
       margin: 0;
       font-family: Arial, sans-serif;
       background: #eef2f7;
+      color: #222;
     }
 
     /* =========================================
-       ENCABEZADO
+       HEADER
     ========================================= */
 
     .header {
       background: #003A8C;
       color: white;
-      padding: 25px;
+      padding: 24px 20px;
       text-align: center;
     }
 
@@ -37,12 +38,13 @@
 
     .header p {
       margin: 8px 0 0;
-      opacity: 0.9;
+      opacity: .9;
+      font-size: 16px;
     }
 
 
     /* =========================================
-       CONTENEDOR PRINCIPAL
+       CONTENEDOR
     ========================================= */
 
     .container {
@@ -53,43 +55,141 @@
 
 
     /* =========================================
-       BUSCADOR
+       PANEL DE VOZ
     ========================================= */
 
-    .buscador {
+    .voice-card {
       background: white;
-      padding: 20px;
-      border-radius: 18px;
-      box-shadow: 0 3px 10px rgba(0,0,0,.1);
-      display: flex;
+      border-radius: 22px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 3px 12px rgba(0,0,0,.10);
+    }
+
+    .voice-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .mic-btn {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: none;
+      background: #003A8C;
+      color: white;
+      cursor: pointer;
+      font-size: 62px;
+      transition: .2s;
+      box-shadow: 0 5px 15px rgba(0,58,140,.25);
+    }
+
+    .mic-btn:hover {
+      transform: scale(1.03);
+    }
+
+    .mic-btn.listening {
+      background: #16a34a;
+      transform: scale(1.05);
+    }
+
+    .mic-btn.processing {
+      background: #ea580c;
+    }
+
+    .mic-text {
+      display: block;
+      font-size: 17px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .voice-help {
+      margin-top: 18px;
+      color: #666;
+      font-size: 15px;
+    }
+
+
+    /* =========================================
+       TRANSCRIPCIÓN
+    ========================================= */
+
+    .speech-info {
+      display: none;
+      margin-top: 20px;
+      background: #f7f9fc;
+      border-radius: 14px;
+      padding: 15px;
+      text-align: left;
+    }
+
+    .speech-label {
+      color: #777;
+      font-size: 13px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    .speech-value {
+      font-size: 18px;
+      margin-top: 3px;
+    }
+
+    .interpretado {
+      color: #003A8C;
+      font-weight: bold;
+    }
+
+
+    /* =========================================
+       BÚSQUEDA ESCRITA SECUNDARIA
+    ========================================= */
+
+    .text-toggle {
+      margin-top: 18px;
+      background: transparent;
+      color: #003A8C;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 10px 15px;
+    }
+
+    .text-search {
+      display: none;
+      margin-top: 15px;
       gap: 10px;
     }
 
-    input {
+    .text-search.visible {
+      display: flex;
+    }
+
+    .text-search input {
       flex: 1;
-      padding: 18px;
-      font-size: 20px;
+      padding: 16px;
+      font-size: 18px;
       border: 2px solid #ccc;
       border-radius: 12px;
       outline: none;
     }
 
-    input:focus {
+    .text-search input:focus {
       border-color: #003A8C;
     }
 
-    button {
-      padding: 15px 25px;
+    .search-btn {
       border: none;
       border-radius: 12px;
       background: #003A8C;
       color: white;
-      font-size: 20px;
+      padding: 15px 24px;
+      font-size: 18px;
       cursor: pointer;
-    }
-
-    button:hover {
-      background: #002d6e;
     }
 
 
@@ -98,15 +198,16 @@
     ========================================= */
 
     #estado {
-      margin-top: 20px;
+      margin-top: 18px;
       text-align: center;
       font-size: 18px;
       color: #666;
+      font-weight: bold;
     }
 
 
     /* =========================================
-       TARJETAS DE RESULTADOS
+       RESULTADOS
     ========================================= */
 
     .resultado {
@@ -118,70 +219,70 @@
       box-shadow: 0 3px 10px rgba(0,0,0,.08);
     }
 
-
-    /* UBICACIÓN */
-
     .ubicacion {
-      font-size: 42px;
+      font-size: 48px;
       font-weight: 900;
       color: #003A8C;
     }
 
-
-    /* PROVEEDOR */
-
     .proveedor {
-      font-size: 26px;
-      font-weight: bold;
-      margin-top: 10px;
+      font-size: 28px;
+      font-weight: 900;
+      margin-top: 8px;
     }
-
-
-    /* INFORMACIÓN OPERATIVA */
 
     .detalle {
       font-size: 20px;
       margin-top: 6px;
     }
 
-
-    /* FECHA - INFORMACIÓN ADMINISTRATIVA */
-
     .fecha {
-      font-size: 13px;
-      color: #888;
+      font-size: 12px;
+      color: #999;
       margin-top: 14px;
-      font-weight: normal;
     }
-
-
-    /* =========================================
-       ERROR
-    ========================================= */
 
     .error {
       background: white;
-      padding: 20px;
-      margin-top: 20px;
+      margin-top: 18px;
+      padding: 22px;
       border-radius: 15px;
       color: #b91c1c;
-      font-weight: bold;
       text-align: center;
+      font-weight: bold;
     }
 
 
     /* =========================================
-       CELULAR / TABLET
+       MÓVIL
     ========================================= */
 
     @media(max-width: 700px) {
 
-      .buscador {
-        flex-direction: column;
+      .header h1 {
+        font-size: 25px;
       }
 
-      button {
+      .container {
+        padding: 15px;
+      }
+
+      .mic-btn {
+        width: 160px;
+        height: 160px;
+      }
+
+      .text-search.visible {
+        display: block;
+      }
+
+      .text-search input {
         width: 100%;
+      }
+
+      .search-btn {
+        width: 100%;
+        margin-top: 8px;
       }
 
     }
@@ -193,10 +294,6 @@
 
 <body>
 
-
-  <!-- =========================================
-       ENCABEZADO
-  ========================================== -->
 
   <div class="header">
 
@@ -211,37 +308,106 @@
   </div>
 
 
-  <!-- =========================================
-       CONTENIDO
-  ========================================== -->
-
   <div class="container">
 
 
-    <!-- BUSCADOR -->
+    <!-- ======================================
+         VOZ
+    ======================================= -->
 
-    <div class="buscador">
+    <div class="voice-card">
 
-      <input
-        id="pregunta"
-        type="text"
-        placeholder="Ejemplo: ¿Qué hay en C4?"
-        autocomplete="off"
+      <div class="voice-title">
+        ¿Qué necesitas encontrar?
+      </div>
+
+
+      <button
+        id="micBtn"
+        class="mic-btn"
+        onclick="escuchar()"
+      >
+        🎤
+        <span
+          id="micText"
+          class="mic-text"
+        >
+          HABLAR
+        </span>
+      </button>
+
+
+      <div class="voice-help">
+        Toca el micrófono y haz tu pregunta
+      </div>
+
+
+      <!-- TRANSCRIPCIÓN -->
+
+      <div
+        id="speechInfo"
+        class="speech-info"
       >
 
-      <button onclick="buscar()">
-        🔎 Buscar
+        <div class="speech-label">
+          Escuché
+        </div>
+
+        <div
+          id="escuchado"
+          class="speech-value"
+        ></div>
+
+
+        <div class="speech-label">
+          Interpretado
+        </div>
+
+        <div
+          id="interpretado"
+          class="speech-value interpretado"
+        ></div>
+
+      </div>
+
+
+      <!-- BOTÓN SECUNDARIO -->
+
+      <button
+        class="text-toggle"
+        onclick="mostrarEscritura()"
+      >
+        ⌨️ Buscar escribiendo
       </button>
+
+
+      <!-- BÚSQUEDA ESCRITA -->
+
+      <div
+        id="textSearch"
+        class="text-search"
+      >
+
+        <input
+          id="pregunta"
+          type="text"
+          placeholder="Escribe tu consulta..."
+          autocomplete="off"
+        >
+
+        <button
+          class="search-btn"
+          onclick="buscarEscrito()"
+        >
+          🔎 Buscar
+        </button>
+
+      </div>
 
     </div>
 
 
-    <!-- ESTADO -->
-
     <div id="estado"></div>
-
-
-    <!-- RESULTADOS -->
 
     <div id="resultados"></div>
 
@@ -253,7 +419,7 @@
 
 
     // =========================================
-    // API DE GOOGLE APPS SCRIPT
+    // API
     // =========================================
 
     const API_URL =
@@ -261,8 +427,49 @@
 
 
     // =========================================
-    // ENTER PARA BUSCAR
+    // RECONOCIMIENTO DE VOZ
     // =========================================
+
+    const SpeechRecognition =
+      window.SpeechRecognition ||
+      window.webkitSpeechRecognition;
+
+
+    let reconocimiento = null;
+
+
+    // =========================================
+    // MOSTRAR BÚSQUEDA ESCRITA
+    // =========================================
+
+    function mostrarEscritura() {
+
+      const zona =
+        document.getElementById(
+          "textSearch"
+        );
+
+      zona.classList.toggle(
+        "visible"
+      );
+
+
+      if (
+        zona.classList.contains(
+          "visible"
+        )
+      ) {
+
+        document
+          .getElementById("pregunta")
+          .focus();
+
+      }
+
+    }
+
+
+    // ENTER PARA BÚSQUEDA ESCRITA
 
     document
       .getElementById("pregunta")
@@ -272,7 +479,7 @@
 
           if (event.key === "Enter") {
 
-            buscar();
+            buscarEscrito();
 
           }
 
@@ -281,10 +488,599 @@
 
 
     // =========================================
-    // FUNCIÓN PRINCIPAL DE BÚSQUEDA
+    // ESCUCHAR
     // =========================================
 
-    async function buscar() {
+    function escuchar() {
+
+
+      if (!SpeechRecognition) {
+
+        mostrarError(
+          "Este navegador no permite reconocimiento de voz. Puedes usar la búsqueda escrita."
+        );
+
+        return;
+
+      }
+
+
+      // Cancelar voz anterior
+
+      if (reconocimiento) {
+
+        try {
+
+          reconocimiento.abort();
+
+        } catch (e) {}
+
+      }
+
+
+      reconocimiento =
+        new SpeechRecognition();
+
+
+      reconocimiento.lang =
+        "es-MX";
+
+
+      reconocimiento.continuous =
+        false;
+
+
+      reconocimiento.interimResults =
+        false;
+
+
+      reconocimiento.maxAlternatives =
+        3;
+
+
+      const boton =
+        document.getElementById(
+          "micBtn"
+        );
+
+
+      const textoBoton =
+        document.getElementById(
+          "micText"
+        );
+
+
+      // CUANDO EMPIEZA
+
+      reconocimiento.onstart =
+        function() {
+
+          boton.classList.add(
+            "listening"
+          );
+
+          boton.classList.remove(
+            "processing"
+          );
+
+          textoBoton.textContent =
+            "ESCUCHANDO...";
+
+          document
+            .getElementById("estado")
+            .textContent =
+            "Habla ahora";
+
+        };
+
+
+      // RESULTADO
+
+      reconocimiento.onresult =
+        function(event) {
+
+
+          boton.classList.remove(
+            "listening"
+          );
+
+          boton.classList.add(
+            "processing"
+          );
+
+
+          textoBoton.textContent =
+            "PROCESANDO";
+
+
+          const alternativas = [];
+
+
+          for (
+            let i = 0;
+            i < event.results[0].length;
+            i++
+          ) {
+
+            alternativas.push(
+              event.results[0][i]
+                .transcript
+                .trim()
+            );
+
+          }
+
+
+          const escuchado =
+            alternativas[0];
+
+
+          document
+            .getElementById(
+              "speechInfo"
+            )
+            .style.display =
+            "block";
+
+
+          document
+            .getElementById(
+              "escuchado"
+            )
+            .textContent =
+            escuchado;
+
+
+          procesarVoz(
+            escuchado,
+            alternativas
+          );
+
+        };
+
+
+      // ERROR
+
+      reconocimiento.onerror =
+        function(event) {
+
+
+          restaurarMicrofono();
+
+
+          let mensaje =
+            "No pude escuchar correctamente. Intenta nuevamente.";
+
+
+          if (
+            event.error ===
+            "not-allowed"
+          ) {
+
+            mensaje =
+              "Necesitas permitir el acceso al micrófono.";
+
+          }
+
+
+          if (
+            event.error ===
+            "no-speech"
+          ) {
+
+            mensaje =
+              "No detecté voz. Toca el micrófono e intenta nuevamente.";
+
+          }
+
+
+          mostrarError(
+            mensaje
+          );
+
+        };
+
+
+      reconocimiento.onend =
+        function() {
+
+          if (
+            !boton.classList.contains(
+              "processing"
+            )
+          ) {
+
+            restaurarMicrofono();
+
+          }
+
+        };
+
+
+      reconocimiento.start();
+
+    }
+
+
+    // =========================================
+    // PROCESAR VOZ
+    // =========================================
+
+    async function procesarVoz(
+      texto,
+      alternativas
+    ) {
+
+
+      /*
+        IMPORTANTE:
+
+        En esta primera versión hacemos
+        normalización básica.
+
+        Después podremos ampliar este motor
+        con los errores reales que veamos
+        durante las pruebas.
+      */
+
+
+      const normalizado =
+        normalizarVoz(texto);
+
+
+      document
+        .getElementById(
+          "interpretado"
+        )
+        .textContent =
+        normalizado;
+
+
+      await consultarAPI(
+        normalizado
+      );
+
+
+      restaurarMicrofono();
+
+    }
+
+
+    // =========================================
+    // NORMALIZADOR DE VOZ
+    // =========================================
+
+    function normalizarVoz(texto) {
+
+
+      let t =
+        quitarAcentos(texto)
+          .toUpperCase();
+
+
+      // Limpiar puntuación
+
+      t = t
+        .replace(/[¿?¡!,.;:]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+
+      // =====================================
+      // LETRAS HABLADAS EN ESPAÑOL
+      // =====================================
+
+      const letras = {
+
+        "A": "A",
+        "BE": "B",
+        "B": "B",
+        "CE": "C",
+        "C": "C",
+        "DE": "D",
+        "D": "D",
+        "E": "E",
+        "EFE": "F",
+        "F": "F",
+        "GE": "G",
+        "G": "G",
+        "HACHE": "H",
+        "H": "H",
+        "I": "I",
+        "JOTA": "J",
+        "J": "J",
+        "KA": "K",
+        "K": "K",
+        "ELE": "L",
+        "L": "L",
+        "EME": "M",
+        "M": "M",
+        "ENE": "N",
+        "N": "N",
+        "O": "O",
+        "PE": "P",
+        "P": "P",
+        "CU": "Q",
+        "Q": "Q",
+        "ERRE": "R",
+        "R": "R",
+        "ESE": "S",
+        "S": "S",
+        "TE": "T",
+        "T": "T",
+        "U": "U",
+        "UVE": "V",
+        "V": "V",
+        "DOBLE U": "W",
+        "DOBLEU": "W",
+        "EQUIS": "X",
+        "X": "X",
+        "YE": "Y",
+        "Y": "Y",
+        "ZETA": "Z",
+        "Z": "Z"
+
+      };
+
+
+      // =====================================
+      // NÚMEROS HABLADOS
+      // =====================================
+
+      const numeros = {
+
+        "CERO": "0",
+        "UNO": "1",
+        "UN": "1",
+        "DOS": "2",
+        "TRES": "3",
+        "CUATRO": "4",
+        "CINCO": "5",
+        "SEIS": "6",
+        "SIETE": "7",
+        "OCHO": "8",
+        "NUEVE": "9",
+
+        "DIEZ": "10",
+        "ONCE": "11",
+        "DOCE": "12",
+        "TRECE": "13",
+        "CATORCE": "14",
+        "QUINCE": "15",
+        "DIECISEIS": "16",
+        "DIECISIETE": "17",
+        "DIECIOCHO": "18",
+        "DIECINUEVE": "19",
+        "VEINTE": "20",
+        "VEINTIUNO": "21",
+        "VEINTIDOS": "22",
+        "VEINTITRES": "23",
+        "VEINTICUATRO": "24",
+        "VEINTICINCO": "25",
+        "VEINTISEIS": "26",
+        "VEINTISIETE": "27",
+        "VEINTIOCHO": "28",
+        "VEINTINUEVE": "29",
+        "TREINTA": "30"
+
+      };
+
+
+      // =====================================
+      // CONVERTIR PALABRAS
+      // =====================================
+
+      let palabras =
+        t.split(" ");
+
+
+      let convertidas = [];
+
+
+      for (
+        let i = 0;
+        i < palabras.length;
+        i++
+      ) {
+
+
+        const palabra =
+          palabras[i];
+
+
+        // Caso especial DOBLE U
+
+        if (
+          palabra === "DOBLE" &&
+          palabras[i + 1] === "U"
+        ) {
+
+          convertidas.push("W");
+
+          i++;
+
+          continue;
+
+        }
+
+
+        if (
+          numeros[palabra] !==
+          undefined
+        ) {
+
+          convertidas.push(
+            numeros[palabra]
+          );
+
+          continue;
+
+        }
+
+
+        if (
+          letras[palabra] !==
+          undefined
+        ) {
+
+          convertidas.push(
+            letras[palabra]
+          );
+
+          continue;
+
+        }
+
+
+        convertidas.push(
+          palabra
+        );
+
+      }
+
+
+      t =
+        convertidas.join(" ");
+
+
+      // =====================================
+      // UNIR CÓDIGOS DE LETRAS SEPARADAS
+      //
+      // Ejemplo:
+      // ESE GE EME ELE
+      // pasa primero a:
+      // S G M L
+      //
+      // y después a:
+      // SGML
+      // =====================================
+
+
+      let partes =
+        t.split(" ");
+
+
+      let resultado = [];
+
+
+      let acumulador = "";
+
+
+      function vaciarAcumulador() {
+
+        if (acumulador) {
+
+          resultado.push(
+            acumulador
+          );
+
+          acumulador = "";
+
+        }
+
+      }
+
+
+      for (
+        let i = 0;
+        i < partes.length;
+        i++
+      ) {
+
+
+        const p =
+          partes[i];
+
+
+        // Letras individuales
+
+        if (/^[A-Z]$/.test(p)) {
+
+          acumulador += p;
+
+          continue;
+
+        }
+
+
+        // Número después de una letra/código
+        // C + 4 => C4
+
+        if (
+          /^\d{1,3}$/.test(p) &&
+          acumulador
+        ) {
+
+          acumulador += p;
+
+          vaciarAcumulador();
+
+          continue;
+
+        }
+
+
+        vaciarAcumulador();
+
+        resultado.push(p);
+
+      }
+
+
+      vaciarAcumulador();
+
+
+      t =
+        resultado.join(" ");
+
+
+      // =====================================
+      // FRASES NATURALES
+      // =====================================
+
+      t = t
+        .replace(
+          /\bEN LA UBICACION\b/g,
+          "UBICACION"
+        )
+        .replace(
+          /\bEN UBICACION\b/g,
+          "UBICACION"
+        )
+        .replace(
+          /\bLA UBICACION\b/g,
+          "UBICACION"
+        )
+        .replace(/\s+/g, " ")
+        .trim();
+
+
+      return t;
+
+    }
+
+
+    // =========================================
+    // QUITAR ACENTOS
+    // =========================================
+
+    function quitarAcentos(texto) {
+
+      return String(texto)
+        .normalize("NFD")
+        .replace(
+          /[\u0300-\u036f]/g,
+          ""
+        );
+
+    }
+
+
+    // =========================================
+    // BÚSQUEDA ESCRITA
+    // =========================================
+
+    async function buscarEscrito() {
 
 
       const input =
@@ -295,6 +1091,41 @@
 
       const pregunta =
         input.value.trim();
+
+
+      if (!pregunta) {
+
+        return;
+
+      }
+
+
+      // Para búsqueda escrita NO
+      // transformamos la pregunta.
+      // Apps Script ya sabe interpretarla.
+
+      document
+        .getElementById(
+          "speechInfo"
+        )
+        .style.display =
+        "none";
+
+
+      await consultarAPI(
+        pregunta
+      );
+
+    }
+
+
+    // =========================================
+    // CONSULTAR API
+    // =========================================
+
+    async function consultarAPI(
+      consulta
+    ) {
 
 
       const estado =
@@ -309,15 +1140,6 @@
         );
 
 
-      // No hacer nada si está vacío
-
-      if (!pregunta) {
-
-        return;
-
-      }
-
-
       estado.textContent =
         "Buscando...";
 
@@ -329,23 +1151,17 @@
       try {
 
 
-        // Construir URL de consulta
-
         const url =
           API_URL +
           "?q=" +
           encodeURIComponent(
-            pregunta
+            consulta
           );
 
-
-        // Consultar Apps Script
 
         const respuesta =
           await fetch(url);
 
-
-        // Comprobar respuesta HTTP
 
         if (!respuesta.ok) {
 
@@ -357,8 +1173,6 @@
         }
 
 
-        // Convertir respuesta a JSON
-
         const datos =
           await respuesta.json();
 
@@ -366,8 +1180,6 @@
         estado.textContent =
           "";
 
-
-        // Error devuelto por API
 
         if (!datos.ok) {
 
@@ -381,8 +1193,6 @@
         }
 
 
-        // Sin resultados
-
         if (!datos.encontrado) {
 
           mostrarError(
@@ -394,7 +1204,31 @@
         }
 
 
-        // Mostrar resultados
+        // Mostrar qué entendió realmente
+        // el backend.
+
+        const interpretado =
+          document.getElementById(
+            "interpretado"
+          );
+
+
+        if (
+          interpretado &&
+          datos.tipo &&
+          datos.valor &&
+          document.getElementById(
+            "speechInfo"
+          ).style.display === "block"
+        ) {
+
+          interpretado.textContent =
+            datos.tipo +
+            ": " +
+            datos.valor;
+
+        }
+
 
         mostrarResultados(
           datos
@@ -442,8 +1276,6 @@
         function(r) {
 
 
-          // Crear tarjeta
-
           const tarjeta =
             document.createElement(
               "div"
@@ -472,12 +1304,12 @@
           );
 
 
-          // NÚMERO DE PROVEEDOR
+          // NÚMERO
 
           agregarCampo(
             tarjeta,
             "Proveedor #" +
-            r.numeroProveedor,
+              r.numeroProveedor,
             "detalle"
           );
 
@@ -487,24 +1319,22 @@
           agregarCampo(
             tarjeta,
             "🚛 Ruta: " +
-            r.ruta,
+              r.ruta,
             "detalle"
           );
 
 
-          // MÁXIMO POR UBICACIÓN
+          // MÁXIMO
 
           agregarCampo(
             tarjeta,
             "📦 Máximo: " +
-            r.maximo,
+              r.maximo,
             "detalle"
           );
 
 
-          // FECHA DE ACTUALIZACIÓN
-          // Se muestra pequeña porque es
-          // información administrativa.
+          // FECHA
 
           if (
             r.fechaActualizacion
@@ -513,14 +1343,12 @@
             agregarCampo(
               tarjeta,
               "Última actualización: " +
-              r.fechaActualizacion,
+                r.fechaActualizacion,
               "fecha"
             );
 
           }
 
-
-          // Agregar tarjeta a pantalla
 
           contenedor.appendChild(
             tarjeta
@@ -534,7 +1362,7 @@
 
 
     // =========================================
-    // CREAR CAMPOS DE FORMA SEGURA
+    // CREAR CAMPO SEGURO
     // =========================================
 
     function agregarCampo(
@@ -562,12 +1390,11 @@
         elemento
       );
 
-
     }
 
 
     // =========================================
-    // MOSTRAR ERROR
+    // ERROR
     // =========================================
 
     function mostrarError(
@@ -603,12 +1430,51 @@
         error
       );
 
+    }
+
+
+    // =========================================
+    // RESTAURAR MICRÓFONO
+    // =========================================
+
+    function restaurarMicrofono() {
+
+
+      const boton =
+        document.getElementById(
+          "micBtn"
+        );
+
+
+      boton.classList.remove(
+        "listening"
+      );
+
+
+      boton.classList.remove(
+        "processing"
+      );
+
+
+      document
+        .getElementById(
+          "micText"
+        )
+        .textContent =
+        "HABLAR";
+
+
+      document
+        .getElementById(
+          "estado"
+        )
+        .textContent =
+        "";
 
     }
 
 
   </script>
-
 
 </body>
 
