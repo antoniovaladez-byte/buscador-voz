@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Buscador de Almacén</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+    }
+
+    .header {
+      background: #003A8C;
+      color: white;
+      padding: 25px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 32px;
+    }
+
+    .header p {
+      margin: 8px 0 0;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 25px;
+    }
+
+    .buscador {
+      background: white;
+      padding: 20px;
+      border-radius: 18px;
+      box-shadow: 0 3px 10px rgba(0,0,0,.1);
+      display: flex;
+      gap: 10px;
+    }
+
+    input {
+      flex: 1;
+      padding: 18px;
+      font-size: 20px;
+      border: 2px solid #ccc;
+      border-radius: 12px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #003A8C;
+    }
+
+    button {
+      padding: 15px 25px;
+      border: none;
+      border-radius: 12px;
+      background: #003A8C;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #002d6e;
+    }
+
+    #estado {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 18px;
+      color: #666;
+    }
+
+    .resultado {
+      background: white;
+      margin-top: 15px;
+      padding: 22px;
+      border-radius: 18px;
+      border-left: 7px solid #003A8C;
+      box-shadow: 0 3px 10px rgba(0,0,0,.08);
+    }
+
+    .ubicacion {
+      font-size: 42px;
+      font-weight: 900;
+      color: #003A8C;
+    }
+
+    .proveedor {
+      font-size: 26px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .detalle {
+      font-size: 20px;
+      margin-top: 6px;
+    }
+
+    .error {
+      background: #fff;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 15px;
+      color: #b91c1c;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    @media(max-width: 700px) {
+      .buscador {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <div class="header">
+    <h1>BUSCADOR DE UBICACIONES</h1>
+    <p>Proveedores • Rutas • Ubicaciones</p>
+  </div>
+
+
+  <div class="container">
+
+    <div class="buscador">
+
+      <input
+        id="pregunta"
+        type="text"
+        placeholder="Ejemplo: ¿Qué hay en C4?"
+      >
+
+      <button onclick="buscar()">
+        🔎 Buscar
+      </button>
+
+    </div>
+
+
+    <div id="estado"></div>
+
+    <div id="resultados"></div>
+
+  </div>
+
+
+  <script>
+
+    const API_URL =
+      "https://script.google.com/macros/s/AKfycbwTizMnhtFdTiui-k3kQ0K658BwcQL_zocdSlbP15Qsj8NMuZ5D2gc1uarXV2DwuOtv/exec";
+
+
+    // ==================================================
+    // ENTER PARA BUSCAR
+    // ==================================================
+
+    document
+      .getElementById("pregunta")
+      .addEventListener("keydown", function(event) {
+
+        if (event.key === "Enter") {
+          buscar();
+        }
+
+      });
+
+
+    // ==================================================
+    // BUSCAR
+    // ==================================================
+
+    async function buscar() {
+
+      const input =
+        document.getElementById("pregunta");
+
+      const pregunta =
+        input.value.trim();
+
+      const estado =
+        document.getElementById("estado");
+
+      const contenedor =
+        document.getElementById("resultados");
+
+
+      if (!pregunta) {
+        return;
+      }
+
+
+      estado.textContent =
+        "Buscando...";
+
+      contenedor.innerHTML = "";
+
+
+      try {
+
+        const url =
+          API_URL +
+          "?q=" +
+          encodeURIComponent(pregunta);
+
+
+        const respuesta =
+          await fetch(url);
+
+
+        if (!respuesta.ok) {
+
+          throw new Error(
+            "Error HTTP: " + respuesta.status
+          );
+
+        }
+
+
+        const datos =
+          await respuesta.json();
+
+
+        estado.textContent = "";
+
+
+        if (!datos.ok) {
+
+          mostrarError(
+            datos.mensaje ||
+            "Ocurrió un error."
+          );
+
+          return;
+        }
+
+
+        if (!datos.encontrado) {
+
+          mostrarError(
+            "No encontré información para esa consulta."
+          );
+
+          return;
+        }
+
+
+        mostrarResultados(datos);
+
+
+      } catch (error) {
+
+        estado.textContent = "";
+
+        mostrarError(
+          "No fue posible consultar la base de datos."
+        );
+
+        console.error(error);
+
+      }
+
+    }
+
+
+    // ==================================================
+    // MOSTRAR RESULTADOS
+    // ==================================================
+
+    function mostrarResultados(datos) {
+
+      const contenedor =
+        document.getElementById("resultados");
+
+
+      datos.resultados.forEach(function(r) {
+
+        const tarjeta =
+          document.createElement("div");
+
+        tarjeta.className =
+          "resultado";
+
+
+        agregarCampo(
+          tarjeta,
+          r.ubicacion,
+          "ubicacion"
+        );
+
+
+        agregarCampo(
+          tarjeta,
+          r.proveedor,
+          "proveedor"
+        );
+
+
+        agregarCampo(
+          tarjeta,
+          "Proveedor #" + r.numeroProveedor,
+          "detalle"
+        );
+
+
+        agregarCampo(
+          tarjeta,
+          "🚛 Ruta: " + r.ruta,
+          "detalle"
+        );
+
+
+        agregarCampo(
+          tarjeta,
+          "📦 Máximo: " + r.maximo,
+          "detalle"
+        );
+
+
+        if (r.fechaActualizacion) {
+
+          agregarCampo(
+            tarjeta,
+            "🕒 Actualizado: " +
+              r.fechaActualizacion,
+            "detalle"
+          );
+
+        }
+
+
+        contenedor.appendChild(
+          tarjeta
+        );
+
+      });
+
+    }
+
+
+    // ==================================================
+    // CREAR CAMPOS DE FORMA SEGURA
+    // ==================================================
+
+    function agregarCampo(
+      padre,
+      texto,
+      clase
+    ) {
+
+      const elemento =
+        document.createElement("div");
+
+      elemento.className =
+        clase;
+
+      elemento.textContent =
+        texto || "";
+
+      padre.appendChild(
+        elemento
+      );
+
+    }
+
+
+    // ==================================================
+    // ERROR
+    // ==================================================
+
+    function mostrarError(mensaje) {
+
+      const contenedor =
+        document.getElementById(
+          "resultados"
+        );
+
+      contenedor.innerHTML = "";
+
+      const error =
+        document.createElement("div");
+
+      error.className =
+        "error";
+
+      error.textContent =
+        mensaje;
+
+      contenedor.appendChild(
+        error
+      );
+
+    }
+
+  </script>
+
+</body>
+
+</html>
