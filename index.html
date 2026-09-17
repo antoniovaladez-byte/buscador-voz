@@ -114,7 +114,7 @@
     }
 
     /* =====================================================
-       BOTÓN DE SONIDO
+       SONIDO
     ===================================================== */
 
     .sound-row {
@@ -215,6 +215,62 @@
     }
 
     /* =====================================================
+       HISTORIAL
+    ===================================================== */
+
+    .historial {
+      display: none;
+      margin-top: 20px;
+      background: white;
+      padding: 18px 20px;
+      border-radius: 16px;
+      box-shadow: 0 3px 10px rgba(0,0,0,.06);
+    }
+
+    .historial.visible {
+      display: block;
+    }
+
+    .historial-titulo {
+      font-size: 13px;
+      font-weight: bold;
+      color: #777;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .historial-botones {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .historial-btn {
+      border: 1px solid #d6dce5;
+      background: #f7f9fc;
+      color: #003A8C;
+      padding: 9px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .historial-btn:hover {
+      background: #e8eef7;
+    }
+
+    .historial-limpiar {
+      margin-top: 13px;
+      border: none;
+      background: transparent;
+      color: #999;
+      cursor: pointer;
+      font-size: 12px;
+      padding: 0;
+    }
+
+    /* =====================================================
        ESTADO
     ===================================================== */
 
@@ -311,16 +367,14 @@
     }
 
   </style>
-
 </head>
+
 
 <body>
 
   <div class="header">
 
-    <h1>
-      BUSCADOR DE UBICACIONES
-    </h1>
+    <h1>BUSCADOR DE UBICACIONES</h1>
 
     <p>
       Proveedores • Rutas • Ubicaciones
@@ -339,8 +393,6 @@
         ¿Qué necesitas encontrar?
       </div>
 
-
-      <!-- MICRÓFONO -->
 
       <button
         id="micBtn"
@@ -365,8 +417,6 @@
       </div>
 
 
-      <!-- SONIDO -->
-
       <div class="sound-row">
 
         <button
@@ -379,8 +429,6 @@
 
       </div>
 
-
-      <!-- INFORMACIÓN DE RECONOCIMIENTO -->
 
       <div
         id="speechInfo"
@@ -408,8 +456,6 @@
 
       </div>
 
-
-      <!-- BÚSQUEDA ESCRITA -->
 
       <button
         class="text-toggle"
@@ -443,9 +489,36 @@
     </div>
 
 
+    <!-- HISTORIAL -->
+
+    <div
+      id="historial"
+      class="historial"
+    >
+
+      <div class="historial-titulo">
+        Búsquedas recientes
+      </div>
+
+      <div
+        id="historialBotones"
+        class="historial-botones"
+      ></div>
+
+      <button
+        class="historial-limpiar"
+        onclick="limpiarHistorial()"
+      >
+        Borrar historial
+      </button>
+
+    </div>
+
+
     <div id="estado"></div>
 
     <div id="resultados"></div>
+
 
   </div>
 
@@ -475,6 +548,296 @@
       numerosProveedor: []
 
     };
+
+
+    // =====================================================
+    // HISTORIAL
+    // =====================================================
+
+    const CLAVE_HISTORIAL =
+      "buscadorAlmacenHistorial";
+
+    const MAX_HISTORIAL = 5;
+
+
+    function obtenerHistorial() {
+
+      try {
+
+        const guardado =
+          localStorage.getItem(
+            CLAVE_HISTORIAL
+          );
+
+        if (!guardado) {
+          return [];
+        }
+
+        const historial =
+          JSON.parse(guardado);
+
+        return Array.isArray(historial)
+          ? historial
+          : [];
+
+      } catch (error) {
+
+        return [];
+
+      }
+
+    }
+
+
+    function guardarEnHistorial(datos) {
+
+      if (
+        !datos ||
+        !datos.encontrado ||
+        !datos.tipo ||
+        !datos.valor
+      ) {
+        return;
+      }
+
+
+      const nuevaBusqueda = {
+
+        tipo:
+          String(datos.tipo),
+
+        valor:
+          String(datos.valor)
+
+      };
+
+
+      let historial =
+        obtenerHistorial();
+
+
+      historial =
+        historial.filter(
+          function(item) {
+
+            return !(
+              item.tipo === nuevaBusqueda.tipo &&
+              item.valor === nuevaBusqueda.valor
+            );
+
+          }
+        );
+
+
+      historial.unshift(
+        nuevaBusqueda
+      );
+
+
+      historial =
+        historial.slice(
+          0,
+          MAX_HISTORIAL
+        );
+
+
+      try {
+
+        localStorage.setItem(
+          CLAVE_HISTORIAL,
+          JSON.stringify(historial)
+        );
+
+      } catch (error) {
+
+        console.error(
+          "No fue posible guardar el historial.",
+          error
+        );
+
+      }
+
+
+      mostrarHistorial();
+
+    }
+
+
+    function mostrarHistorial() {
+
+      const historial =
+        obtenerHistorial();
+
+
+      const zona =
+        document.getElementById(
+          "historial"
+        );
+
+
+      const botones =
+        document.getElementById(
+          "historialBotones"
+        );
+
+
+      botones.innerHTML = "";
+
+
+      if (!historial.length) {
+
+        zona.classList.remove(
+          "visible"
+        );
+
+        return;
+
+      }
+
+
+      zona.classList.add(
+        "visible"
+      );
+
+
+      historial.forEach(
+        function(item) {
+
+
+          const boton =
+            document.createElement(
+              "button"
+            );
+
+
+          boton.className =
+            "historial-btn";
+
+
+          boton.textContent =
+            etiquetaHistorial(
+              item
+            );
+
+
+          boton.addEventListener(
+            "click",
+            function() {
+
+              repetirBusqueda(
+                item
+              );
+
+            }
+          );
+
+
+          botones.appendChild(
+            boton
+          );
+
+        }
+      );
+
+    }
+
+
+    function etiquetaHistorial(item) {
+
+      if (
+        item.tipo === "UBICACION"
+      ) {
+
+        return "📍 " +
+          item.valor;
+
+      }
+
+
+      if (
+        item.tipo === "RUTA"
+      ) {
+
+        return "🚛 " +
+          item.valor;
+
+      }
+
+
+      if (
+        item.tipo === "PROVEEDOR"
+      ) {
+
+        return "🏭 " +
+          item.valor;
+
+      }
+
+
+      if (
+        item.tipo === "NUMERO"
+      ) {
+
+        return "# " +
+          item.valor;
+
+      }
+
+
+      return item.valor;
+
+    }
+
+
+    async function repetirBusqueda(
+      item
+    ) {
+
+      if (
+        "speechSynthesis" in window
+      ) {
+
+        window.speechSynthesis.cancel();
+
+      }
+
+
+      document
+        .getElementById(
+          "speechInfo"
+        )
+        .style.display =
+        "none";
+
+
+      const consulta =
+        item.tipo +
+        " " +
+        item.valor;
+
+
+      await consultarAPI(
+        consulta,
+        false
+      );
+
+    }
+
+
+    function limpiarHistorial() {
+
+      try {
+
+        localStorage.removeItem(
+          CLAVE_HISTORIAL
+        );
+
+      } catch (error) {}
+
+
+      mostrarHistorial();
+
+    }
 
 
     // =====================================================
@@ -531,9 +894,6 @@
     }
 
 
-    cargarCatalogo();
-
-
     // =====================================================
     // RECONOCIMIENTO DE VOZ
     // =====================================================
@@ -547,11 +907,10 @@
 
 
     // =====================================================
-    // ACTIVAR / DESACTIVAR SONIDO
+    // SONIDO
     // =====================================================
 
     function alternarSonido() {
-
 
       sonidoActivado =
         !sonidoActivado;
@@ -593,24 +952,17 @@
 
     function hablar(texto) {
 
-
       if (!sonidoActivado) {
-
         return;
-
       }
 
 
       if (
         !("speechSynthesis" in window)
       ) {
-
         return;
-
       }
 
-
-      // Cancelar cualquier frase anterior.
 
       window.speechSynthesis.cancel();
 
@@ -624,21 +976,10 @@
       mensaje.lang =
         "es-MX";
 
+      mensaje.rate = 1;
+      mensaje.pitch = 1;
+      mensaje.volume = 1;
 
-      mensaje.rate =
-        1;
-
-
-      mensaje.pitch =
-        1;
-
-
-      mensaje.volume =
-        1;
-
-
-      // Intentar seleccionar una voz
-      // mexicana/española disponible.
 
       const voces =
         window.speechSynthesis
@@ -701,7 +1042,6 @@
 
     function mostrarEscritura() {
 
-
       const zona =
         document.getElementById(
           "textSearch"
@@ -756,10 +1096,6 @@
 
     function escuchar() {
 
-
-      // Evitar que la propia voz del
-      // sistema sea captada por el micrófono.
-
       if (
         "speechSynthesis" in window
       ) {
@@ -798,14 +1134,11 @@
       reconocimiento.lang =
         "es-MX";
 
-
       reconocimiento.continuous =
         false;
 
-
       reconocimiento.interimResults =
         false;
-
 
       reconocimiento.maxAlternatives =
         3;
@@ -826,20 +1159,16 @@
       reconocimiento.onstart =
         function() {
 
-
           boton.classList.add(
             "listening"
           );
-
 
           boton.classList.remove(
             "processing"
           );
 
-
           textoBoton.textContent =
             "ESCUCHANDO...";
-
 
           document
             .getElementById(
@@ -854,16 +1183,13 @@
       reconocimiento.onresult =
         function(event) {
 
-
           boton.classList.remove(
             "listening"
           );
 
-
           boton.classList.add(
             "processing"
           );
-
 
           textoBoton.textContent =
             "PROCESANDO";
@@ -913,7 +1239,6 @@
       reconocimiento.onerror =
         function(event) {
 
-
           restaurarMicrofono();
 
 
@@ -922,8 +1247,7 @@
 
 
           if (
-            event.error ===
-            "not-allowed"
+            event.error === "not-allowed"
           ) {
 
             mensaje =
@@ -933,8 +1257,7 @@
 
 
           if (
-            event.error ===
-            "no-speech"
+            event.error === "no-speech"
           ) {
 
             mensaje =
@@ -984,7 +1307,6 @@
       alternativas
     ) {
 
-
       let mejor = null;
 
 
@@ -993,7 +1315,6 @@
         i < alternativas.length;
         i++
       ) {
-
 
         const candidato =
           detectarContraCatalogo(
@@ -1014,7 +1335,6 @@
 
 
       if (mejor) {
-
 
         const consulta =
           mejor.tipo +
@@ -1078,7 +1398,6 @@
       texto
     ) {
 
-
       const normal =
         normalizarParaComparar(
           texto
@@ -1103,8 +1422,6 @@
         );
 
 
-      // UBICACIÓN
-
       const ubicacion =
         encontrarMejorCodigo(
           texto,
@@ -1124,16 +1441,12 @@
       ) {
 
         return {
-
           tipo: "UBICACION",
           valor: ubicacion
-
         };
 
       }
 
-
-      // RUTA
 
       const ruta =
         encontrarMejorCodigo(
@@ -1151,16 +1464,12 @@
       ) {
 
         return {
-
           tipo: "RUTA",
           valor: ruta
-
         };
 
       }
 
-
-      // PROVEEDOR
 
       const proveedor =
         encontrarMejorCodigo(
@@ -1172,16 +1481,12 @@
       if (proveedor) {
 
         return {
-
           tipo: "PROVEEDOR",
           valor: proveedor
-
         };
 
       }
 
-
-      // NÚMERO
 
       const numero =
         encontrarMejorCodigo(
@@ -1193,10 +1498,8 @@
       if (numero) {
 
         return {
-
           tipo: "NUMERO",
           valor: numero
-
         };
 
       }
@@ -1215,7 +1518,6 @@
       texto,
       lista
     ) {
-
 
       if (
         !lista ||
@@ -1240,9 +1542,7 @@
 
 
       let mejor = null;
-
-      let mejorPuntaje =
-        Infinity;
+      let mejorPuntaje = Infinity;
 
 
       for (
@@ -1250,7 +1550,6 @@
         i < lista.length;
         i++
       ) {
-
 
         const codigo =
           String(lista[i])
@@ -1262,13 +1561,9 @@
 
 
         if (!codigo) {
-
           continue;
-
         }
 
-
-        // Coincidencia exacta.
 
         if (
           fraseCompacta.includes(
@@ -1281,14 +1576,11 @@
         }
 
 
-        // Coincidencia aproximada.
-
         for (
           let j = 0;
           j < candidatos.length;
           j++
         ) {
-
 
           const candidato =
             candidatos[j];
@@ -1321,7 +1613,6 @@
 
       if (mejor) {
 
-
         const longitud =
           String(mejor)
             .replace(
@@ -1338,8 +1629,7 @@
 
 
         if (
-          mejorPuntaje <=
-          limite
+          mejorPuntaje <= limite
         ) {
 
           return mejor;
@@ -1361,7 +1651,6 @@
     function generarCandidatos(
       texto
     ) {
-
 
       const candidatos =
         new Set();
@@ -1385,13 +1674,11 @@
       const palabras =
         normalizarVoz(
           texto
-        )
-          .split(" ");
+        ).split(" ");
 
 
       palabras.forEach(
         function(palabra) {
-
 
           const limpia =
             palabra.replace(
@@ -1418,7 +1705,6 @@
         inicio++
       ) {
 
-
         let acumulado = "";
 
 
@@ -1428,7 +1714,6 @@
           fin < inicio + 6;
           fin++
         ) {
-
 
           acumulado +=
             palabras[fin]
@@ -1466,7 +1751,6 @@
       texto
     ) {
 
-
       const normal =
         normalizarVoz(
           texto
@@ -1474,62 +1758,20 @@
 
 
       return normal
-        .replace(
-          /\bQUE\b/g,
-          ""
-        )
-        .replace(
-          /\bHAY\b/g,
-          ""
-        )
-        .replace(
-          /\bDONDE\b/g,
-          ""
-        )
-        .replace(
-          /\bESTA\b/g,
-          ""
-        )
-        .replace(
-          /\bESTAN\b/g,
-          ""
-        )
-        .replace(
-          /\bEL\b/g,
-          ""
-        )
-        .replace(
-          /\bLA\b/g,
-          ""
-        )
-        .replace(
-          /\bLOS\b/g,
-          ""
-        )
-        .replace(
-          /\bLAS\b/g,
-          ""
-        )
-        .replace(
-          /\bEN\b/g,
-          ""
-        )
-        .replace(
-          /\bUBICACION\b/g,
-          ""
-        )
-        .replace(
-          /\bPROVEEDOR\b/g,
-          ""
-        )
-        .replace(
-          /\bRUTA\b/g,
-          ""
-        )
-        .replace(
-          /[^A-Z0-9]/g,
-          ""
-        );
+        .replace(/\bQUE\b/g, "")
+        .replace(/\bHAY\b/g, "")
+        .replace(/\bDONDE\b/g, "")
+        .replace(/\bESTA\b/g, "")
+        .replace(/\bESTAN\b/g, "")
+        .replace(/\bEL\b/g, "")
+        .replace(/\bLA\b/g, "")
+        .replace(/\bLOS\b/g, "")
+        .replace(/\bLAS\b/g, "")
+        .replace(/\bEN\b/g, "")
+        .replace(/\bUBICACION\b/g, "")
+        .replace(/\bPROVEEDOR\b/g, "")
+        .replace(/\bRUTA\b/g, "")
+        .replace(/[^A-Z0-9]/g, "");
 
     }
 
@@ -1541,7 +1783,6 @@
     function normalizarParaComparar(
       texto
     ) {
-
 
       return quitarAcentos(
         String(texto)
@@ -1561,13 +1802,12 @@
 
 
     // =====================================================
-    // NORMALIZADOR DE VOZ
+    // NORMALIZAR VOZ
     // =====================================================
 
     function normalizarVoz(
       texto
     ) {
-
 
       let t =
         normalizarParaComparar(
@@ -1697,8 +1937,7 @@
         t.split(" ");
 
 
-      const convertidas =
-        [];
+      const convertidas = [];
 
 
       for (
@@ -1707,12 +1946,9 @@
         i++
       ) {
 
-
         const palabra =
           palabras[i];
 
-
-        // DOBLE U
 
         if (
           palabra === "DOBLE" &&
@@ -1773,12 +2009,9 @@
         t.split(" ");
 
 
-      const resultado =
-        [];
+      const resultado = [];
 
-
-      let acumulador =
-        "";
+      let acumulador = "";
 
 
       function vaciar() {
@@ -1789,8 +2022,7 @@
             acumulador
           );
 
-          acumulador =
-            "";
+          acumulador = "";
 
         }
 
@@ -1803,34 +2035,27 @@
         i++
       ) {
 
-
         const p =
           partes[i];
 
-
-        // LETRA
 
         if (
           /^[A-Z]$/.test(p)
         ) {
 
-          acumulador +=
-            p;
+          acumulador += p;
 
           continue;
 
         }
 
 
-        // NÚMERO DESPUÉS DE LETRA
-
         if (
           /^\d{1,3}$/.test(p) &&
           acumulador
         ) {
 
-          acumulador +=
-            p;
+          acumulador += p;
 
           vaciar();
 
@@ -1840,7 +2065,6 @@
 
 
         vaciar();
-
 
         resultado.push(
           p
@@ -1872,17 +2096,14 @@
       b
     ) {
 
-
       a =
         String(a || "");
-
 
       b =
         String(b || "");
 
 
-      const matriz =
-        [];
+      const matriz = [];
 
 
       for (
@@ -1891,8 +2112,7 @@
         i++
       ) {
 
-        matriz[i] =
-          [i];
+        matriz[i] = [i];
 
       }
 
@@ -1903,8 +2123,7 @@
         j++
       ) {
 
-        matriz[0][j] =
-          j;
+        matriz[0][j] = j;
 
       }
 
@@ -1915,13 +2134,11 @@
         i++
       ) {
 
-
         for (
           let j = 1;
           j <= a.length;
           j++
         ) {
-
 
           if (
             b.charAt(i - 1) ===
@@ -1964,7 +2181,6 @@
       texto
     ) {
 
-
       return String(texto)
         .normalize("NFD")
         .replace(
@@ -1981,7 +2197,6 @@
 
     async function buscarEscrito() {
 
-
       const pregunta =
         document
           .getElementById(
@@ -1992,9 +2207,7 @@
 
 
       if (!pregunta) {
-
         return;
-
       }
 
 
@@ -2023,7 +2236,6 @@
       vieneDeVoz
     ) {
 
-
       const estado =
         document.getElementById(
           "estado"
@@ -2045,7 +2257,6 @@
 
 
       try {
-
 
         const url =
           API_URL +
@@ -2075,12 +2286,10 @@
           await respuesta.json();
 
 
-        estado.textContent =
-          "";
+        estado.textContent = "";
 
 
         if (!datos.ok) {
-
 
           const mensaje =
             datos.mensaje ||
@@ -2107,7 +2316,6 @@
 
 
         if (!datos.encontrado) {
-
 
           mostrarError(
             "No encontré información para esa consulta."
@@ -2151,8 +2359,15 @@
         );
 
 
-        // Respuesta hablada únicamente
-        // cuando la búsqueda vino del micrófono.
+        // GUARDAR EN HISTORIAL
+
+        guardarEnHistorial(
+          datos
+        );
+
+
+        // RESPUESTA HABLADA SOLO
+        // PARA CONSULTAS DE MICRÓFONO
 
         if (vieneDeVoz) {
 
@@ -2165,9 +2380,7 @@
 
       } catch (error) {
 
-
-        estado.textContent =
-          "";
+        estado.textContent = "";
 
 
         mostrarError(
@@ -2194,21 +2407,18 @@
 
 
     // =====================================================
-    // CREAR RESPUESTA HABLADA
+    // RESPUESTA HABLADA
     // =====================================================
 
     function responderConVoz(
       datos
     ) {
 
-
       if (
         !datos.resultados ||
         !datos.resultados.length
       ) {
-
         return;
-
       }
 
 
@@ -2229,18 +2439,16 @@
 
 
       // ===================================================
-      // UNA UBICACIÓN
+      // UBICACIÓN
       // ===================================================
 
       if (
         tipo === "UBICACION"
       ) {
 
-
         if (
           resultados.length === 1
         ) {
-
 
           const r =
             resultados[0];
@@ -2274,17 +2482,12 @@
           }
 
 
-          hablar(
-            frase
-          );
-
+          hablar(frase);
 
           return;
 
         }
 
-
-        // Una ubicación con varios proveedores.
 
         const proveedores =
           resultados
@@ -2317,14 +2520,13 @@
 
 
       // ===================================================
-      // PROVEEDOR
+      // PROVEEDOR / NÚMERO
       // ===================================================
 
       if (
         tipo === "PROVEEDOR" ||
         tipo === "NUMERO"
       ) {
-
 
         const ubicaciones =
           obtenerUnicos(
@@ -2336,7 +2538,6 @@
         if (
           ubicaciones.length === 1
         ) {
-
 
           hablar(
             "El proveedor " +
@@ -2359,7 +2560,6 @@
         if (
           ubicaciones.length <= 5
         ) {
-
 
           hablar(
             "El proveedor " +
@@ -2407,7 +2607,6 @@
         tipo === "RUTA"
       ) {
 
-
         const ubicaciones =
           obtenerUnicos(
             resultados,
@@ -2418,7 +2617,6 @@
         if (
           ubicaciones.length <= 5
         ) {
-
 
           hablar(
             "La ruta " +
@@ -2454,10 +2652,6 @@
       }
 
 
-      // ===================================================
-      // RESPUESTA GENÉRICA
-      // ===================================================
-
       hablar(
         "Encontré " +
         resultados.length +
@@ -2469,20 +2663,11 @@
 
     // =====================================================
     // PRONUNCIAR CÓDIGOS
-    //
-    // Convierte:
-    //
-    // C4    -> C 4
-    // SGML  -> S G M L
-    // SRKMX -> S R K M X
-    //
-    // Esto ayuda al sintetizador de voz.
     // =====================================================
 
     function decirCodigo(
       codigo
     ) {
-
 
       codigo =
         String(
@@ -2493,14 +2678,9 @@
 
 
       if (!codigo) {
-
         return "";
-
       }
 
-
-      // Si contiene letras/números,
-      // los separamos.
 
       if (
         /^[A-Z0-9]+$/.test(
@@ -2521,14 +2701,13 @@
 
 
     // =====================================================
-    // OBTENER VALORES ÚNICOS
+    // VALORES ÚNICOS
     // =====================================================
 
     function obtenerUnicos(
       resultados,
       campo
     ) {
-
 
       const valores =
         new Set();
@@ -2537,12 +2716,10 @@
       resultados.forEach(
         function(r) {
 
-
           const valor =
             String(
               r[campo] || ""
-            )
-              .trim();
+            ).trim();
 
 
           if (valor) {
@@ -2572,7 +2749,6 @@
       datos
     ) {
 
-
       const contenedor =
         document.getElementById(
           "resultados"
@@ -2581,7 +2757,6 @@
 
       datos.resultados.forEach(
         function(r) {
-
 
           const tarjeta =
             document.createElement(
@@ -2665,7 +2840,6 @@
       clase
     ) {
 
-
       const elemento =
         document.createElement(
           "div"
@@ -2688,13 +2862,12 @@
 
 
     // =====================================================
-    // MOSTRAR ERROR
+    // ERROR
     // =====================================================
 
     function mostrarError(
       mensaje
     ) {
-
 
       const contenedor =
         document.getElementById(
@@ -2702,8 +2875,7 @@
         );
 
 
-      contenedor.innerHTML =
-        "";
+      contenedor.innerHTML = "";
 
 
       const error =
@@ -2732,7 +2904,6 @@
     // =====================================================
 
     function restaurarMicrofono() {
-
 
       const boton =
         document.getElementById(
@@ -2766,6 +2937,16 @@
         "";
 
     }
+
+
+    // =====================================================
+    // INICIALIZACIÓN
+    // =====================================================
+
+    cargarCatalogo();
+
+    mostrarHistorial();
+
 
   </script>
 
