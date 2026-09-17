@@ -20,10 +20,6 @@
       color: #222;
     }
 
-    /* =====================================================
-       ENCABEZADO
-    ===================================================== */
-
     .header {
       background: #003A8C;
       color: white;
@@ -42,19 +38,11 @@
       font-size: 16px;
     }
 
-    /* =====================================================
-       CONTENEDOR
-    ===================================================== */
-
     .container {
       max-width: 1000px;
       margin: auto;
       padding: 25px;
     }
-
-    /* =====================================================
-       PANEL PRINCIPAL
-    ===================================================== */
 
     .voice-card {
       background: white;
@@ -69,10 +57,6 @@
       font-weight: bold;
       margin-bottom: 20px;
     }
-
-    /* =====================================================
-       MICRÓFONO
-    ===================================================== */
 
     .mic-btn {
       width: 180px;
@@ -113,10 +97,6 @@
       font-size: 15px;
     }
 
-    /* =====================================================
-       SONIDO
-    ===================================================== */
-
     .sound-row {
       margin-top: 18px;
     }
@@ -134,10 +114,6 @@
     .sound-btn:hover {
       background: #eef2f7;
     }
-
-    /* =====================================================
-       INFORMACIÓN DE VOZ
-    ===================================================== */
 
     .speech-info {
       display: none;
@@ -165,10 +141,6 @@
       color: #003A8C;
       font-weight: bold;
     }
-
-    /* =====================================================
-       BÚSQUEDA ESCRITA
-    ===================================================== */
 
     .text-toggle {
       margin-top: 18px;
@@ -270,10 +242,6 @@
       padding: 0;
     }
 
-    /* =====================================================
-       ESTADO
-    ===================================================== */
-
     #estado {
       margin-top: 18px;
       text-align: center;
@@ -281,10 +249,6 @@
       color: #666;
       font-weight: bold;
     }
-
-    /* =====================================================
-       RESULTADOS
-    ===================================================== */
 
     .resultado {
       background: white;
@@ -319,8 +283,37 @@
     }
 
     /* =====================================================
-       ERROR
+       RESPUESTA CONTEXTUAL
     ===================================================== */
+
+    .respuesta-contextual {
+      background: white;
+      margin-top: 15px;
+      padding: 24px;
+      border-radius: 18px;
+      border-left: 7px solid #16a34a;
+      box-shadow: 0 3px 10px rgba(0,0,0,.08);
+    }
+
+    .respuesta-contextual-titulo {
+      color: #777;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    .respuesta-contextual-valor {
+      color: #003A8C;
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .respuesta-contextual-detalle {
+      color: #555;
+      font-size: 15px;
+      margin-top: 8px;
+    }
 
     .error {
       background: white;
@@ -331,10 +324,6 @@
       text-align: center;
       font-weight: bold;
     }
-
-    /* =====================================================
-       MÓVIL
-    ===================================================== */
 
     @media(max-width: 700px) {
 
@@ -364,11 +353,15 @@
         margin-top: 8px;
       }
 
+      .respuesta-contextual-valor {
+        font-size: 25px;
+      }
+
     }
 
   </style>
-</head>
 
+</head>
 
 <body>
 
@@ -489,8 +482,6 @@
     </div>
 
 
-    <!-- HISTORIAL -->
-
     <div
       id="historial"
       class="historial"
@@ -551,6 +542,90 @@
 
 
     // =====================================================
+    // CONTEXTO DE SESIÓN
+    //
+    // NO usamos localStorage.
+    //
+    // Si se recarga o cierra la página,
+    // este contexto desaparece.
+    // =====================================================
+
+    let contextoActual = null;
+
+
+    function guardarContexto(datos) {
+
+      if (
+        !datos ||
+        !datos.encontrado ||
+        !datos.resultados ||
+        !datos.resultados.length
+      ) {
+
+        return;
+
+      }
+
+
+      contextoActual = {
+
+        tipo:
+          String(
+            datos.tipo || ""
+          ),
+
+        valor:
+          String(
+            datos.valor || ""
+          ),
+
+        resultados:
+          datos.resultados.map(
+            function(r) {
+
+              return {
+
+                ubicacion:
+                  String(
+                    r.ubicacion || ""
+                  ),
+
+                proveedor:
+                  String(
+                    r.proveedor || ""
+                  ),
+
+                numeroProveedor:
+                  String(
+                    r.numeroProveedor || ""
+                  ),
+
+                ruta:
+                  String(
+                    r.ruta || ""
+                  ),
+
+                maximo:
+                  String(
+                    r.maximo || ""
+                  ),
+
+                fechaActualizacion:
+                  String(
+                    r.fechaActualizacion || ""
+                  )
+
+              };
+
+            }
+          )
+
+      };
+
+    }
+
+
+    // =====================================================
     // HISTORIAL
     // =====================================================
 
@@ -569,16 +644,24 @@
             CLAVE_HISTORIAL
           );
 
+
         if (!guardado) {
           return [];
         }
 
-        const historial =
-          JSON.parse(guardado);
 
-        return Array.isArray(historial)
+        const historial =
+          JSON.parse(
+            guardado
+          );
+
+
+        return Array.isArray(
+          historial
+        )
           ? historial
           : [];
+
 
       } catch (error) {
 
@@ -589,7 +672,9 @@
     }
 
 
-    function guardarEnHistorial(datos) {
+    function guardarEnHistorial(
+      datos
+    ) {
 
       if (
         !datos ||
@@ -597,17 +682,23 @@
         !datos.tipo ||
         !datos.valor
       ) {
+
         return;
+
       }
 
 
       const nuevaBusqueda = {
 
         tipo:
-          String(datos.tipo),
+          String(
+            datos.tipo
+          ),
 
         valor:
-          String(datos.valor)
+          String(
+            datos.valor
+          )
 
       };
 
@@ -621,8 +712,10 @@
           function(item) {
 
             return !(
-              item.tipo === nuevaBusqueda.tipo &&
-              item.valor === nuevaBusqueda.valor
+              item.tipo ===
+                nuevaBusqueda.tipo &&
+              item.valor ===
+                nuevaBusqueda.valor
             );
 
           }
@@ -645,7 +738,9 @@
 
         localStorage.setItem(
           CLAVE_HISTORIAL,
-          JSON.stringify(historial)
+          JSON.stringify(
+            historial
+          )
         );
 
       } catch (error) {
@@ -703,7 +798,6 @@
       historial.forEach(
         function(item) {
 
-
           const boton =
             document.createElement(
               "button"
@@ -742,7 +836,9 @@
     }
 
 
-    function etiquetaHistorial(item) {
+    function etiquetaHistorial(
+      item
+    ) {
 
       if (
         item.tipo === "UBICACION"
@@ -850,7 +946,8 @@
 
         const respuesta =
           await fetch(
-            API_URL + "?catalogo=1"
+            API_URL +
+            "?catalogo=1"
           );
 
 
@@ -881,6 +978,7 @@
           );
 
         }
+
 
       } catch (error) {
 
@@ -946,11 +1044,9 @@
     }
 
 
-    // =====================================================
-    // HABLAR
-    // =====================================================
-
-    function hablar(texto) {
+    function hablar(
+      texto
+    ) {
 
       if (!sonidoActivado) {
         return;
@@ -994,7 +1090,9 @@
               voz.lang &&
               voz.lang
                 .toLowerCase()
-                .startsWith("es-mx")
+                .startsWith(
+                  "es-mx"
+                )
             );
 
           }
@@ -1009,7 +1107,9 @@
               voz.lang &&
               voz.lang
                 .toLowerCase()
-                .startsWith("es")
+                .startsWith(
+                  "es"
+                )
             );
 
           }
@@ -1170,6 +1270,7 @@
           textoBoton.textContent =
             "ESCUCHANDO...";
 
+
           document
             .getElementById(
               "estado"
@@ -1247,7 +1348,8 @@
 
 
           if (
-            event.error === "not-allowed"
+            event.error ===
+            "not-allowed"
           ) {
 
             mensaje =
@@ -1257,7 +1359,8 @@
 
 
           if (
-            event.error === "no-speech"
+            event.error ===
+            "no-speech"
           ) {
 
             mensaje =
@@ -1306,6 +1409,54 @@
     async function procesarAlternativas(
       alternativas
     ) {
+
+      // -----------------------------------------
+      // PRIMERO:
+      // ¿Es una pregunta sobre el contexto?
+      // -----------------------------------------
+
+      for (
+        let i = 0;
+        i < alternativas.length;
+        i++
+      ) {
+
+        const contextual =
+          detectarPreguntaContextual(
+            alternativas[i]
+          );
+
+
+        if (contextual) {
+
+          document
+            .getElementById(
+              "interpretado"
+            )
+            .textContent =
+            "CONTEXTO: " +
+            contextual;
+
+
+          responderPreguntaContextual(
+            contextual,
+            true
+          );
+
+
+          restaurarMicrofono();
+
+          return;
+
+        }
+
+      }
+
+
+      // -----------------------------------------
+      // SI NO:
+      // búsqueda normal contra catálogo.
+      // -----------------------------------------
 
       let mejor = null;
 
@@ -1391,6 +1542,517 @@
 
 
     // =====================================================
+    // DETECTAR PREGUNTA CONTEXTUAL
+    // =====================================================
+
+    function detectarPreguntaContextual(
+      texto
+    ) {
+
+      if (!contextoActual) {
+
+        return null;
+
+      }
+
+
+      const t =
+        normalizarParaComparar(
+          texto
+        );
+
+
+      // RUTA
+
+      if (
+        /\bRUTA\b/.test(t) &&
+        (
+          /\bQUE\b/.test(t) ||
+          /\bCUAL\b/.test(t) ||
+          /\bTIENE\b/.test(t) ||
+          /\bES\b/.test(t)
+        )
+      ) {
+
+        return "RUTA";
+
+      }
+
+
+      // MÁXIMO
+
+      if (
+        /\bMAXIMO\b/.test(t) ||
+        /\bMAXIMA\b/.test(t) ||
+        /\bCAPACIDAD\b/.test(t)
+      ) {
+
+        return "MAXIMO";
+
+      }
+
+
+      // NÚMERO DE PROVEEDOR
+
+      if (
+        /\bNUMERO\b/.test(t) &&
+        /\bPROVEEDOR\b/.test(t)
+      ) {
+
+        return "NUMERO";
+
+      }
+
+
+      // FECHA / ACTUALIZACIÓN
+
+      if (
+        /\bACTUALIZ/.test(t) ||
+        /\bFECHA\b/.test(t) ||
+        /\bCUANDO\b/.test(t)
+      ) {
+
+        return "FECHA";
+
+      }
+
+
+      // UBICACIÓN
+
+      if (
+        /\bUBICACION\b/.test(t) &&
+        (
+          /\bQUE\b/.test(t) ||
+          /\bCUAL\b/.test(t) ||
+          /\bDONDE\b/.test(t) ||
+          /\bESTA\b/.test(t)
+        )
+      ) {
+
+        return "UBICACION";
+
+      }
+
+
+      // PROVEEDOR
+
+      if (
+        /\bPROVEEDOR\b/.test(t) &&
+        (
+          /\bQUE\b/.test(t) ||
+          /\bCUAL\b/.test(t) ||
+          /\bQUIEN\b/.test(t) ||
+          /\bES\b/.test(t)
+        )
+      ) {
+
+        return "PROVEEDOR";
+
+      }
+
+
+      return null;
+
+    }
+
+
+    // =====================================================
+    // RESPONDER USANDO EL CONTEXTO
+    // =====================================================
+
+    function responderPreguntaContextual(
+      campo,
+      vieneDeVoz
+    ) {
+
+      if (
+        !contextoActual ||
+        !contextoActual.resultados ||
+        !contextoActual.resultados.length
+      ) {
+
+        const mensaje =
+          "Primero necesito una búsqueda para saber a qué te refieres.";
+
+
+        mostrarRespuestaContextual(
+          "Sin contexto",
+          mensaje
+        );
+
+
+        if (vieneDeVoz) {
+
+          hablar(
+            mensaje
+          );
+
+        }
+
+
+        return;
+
+      }
+
+
+      const resultados =
+        contextoActual.resultados;
+
+
+      let propiedad = "";
+      let titulo = "";
+      let nombreHablado = "";
+
+
+      if (
+        campo === "RUTA"
+      ) {
+
+        propiedad =
+          "ruta";
+
+        titulo =
+          "Ruta";
+
+        nombreHablado =
+          "La ruta";
+
+      }
+
+
+      if (
+        campo === "MAXIMO"
+      ) {
+
+        propiedad =
+          "maximo";
+
+        titulo =
+          "Máximo";
+
+        nombreHablado =
+          "El máximo";
+
+      }
+
+
+      if (
+        campo === "NUMERO"
+      ) {
+
+        propiedad =
+          "numeroProveedor";
+
+        titulo =
+          "Número de proveedor";
+
+        nombreHablado =
+          "El número de proveedor";
+
+      }
+
+
+      if (
+        campo === "FECHA"
+      ) {
+
+        propiedad =
+          "fechaActualizacion";
+
+        titulo =
+          "Última actualización";
+
+        nombreHablado =
+          "La última actualización";
+
+      }
+
+
+      if (
+        campo === "UBICACION"
+      ) {
+
+        propiedad =
+          "ubicacion";
+
+        titulo =
+          "Ubicación";
+
+        nombreHablado =
+          "La ubicación";
+
+      }
+
+
+      if (
+        campo === "PROVEEDOR"
+      ) {
+
+        propiedad =
+          "proveedor";
+
+        titulo =
+          "Proveedor";
+
+        nombreHablado =
+          "El proveedor";
+
+      }
+
+
+      const valores =
+        obtenerValoresUnicos(
+          resultados,
+          propiedad
+        );
+
+
+      if (!valores.length) {
+
+        const mensaje =
+          "No hay información disponible para ese dato.";
+
+
+        mostrarRespuestaContextual(
+          titulo,
+          mensaje
+        );
+
+
+        if (vieneDeVoz) {
+
+          hablar(
+            mensaje
+          );
+
+        }
+
+
+        return;
+
+      }
+
+
+      // -----------------------------------------
+      // UNA SOLA RESPUESTA
+      // -----------------------------------------
+
+      if (
+        valores.length === 1
+      ) {
+
+        const valor =
+          valores[0];
+
+
+        mostrarRespuestaContextual(
+          titulo,
+          valor
+        );
+
+
+        if (vieneDeVoz) {
+
+          let valorHablado =
+            valor;
+
+
+          if (
+            campo === "RUTA" ||
+            campo === "UBICACION" ||
+            campo === "PROVEEDOR" ||
+            campo === "NUMERO"
+          ) {
+
+            valorHablado =
+              decirCodigo(
+                valor
+              );
+
+          }
+
+
+          hablar(
+            nombreHablado +
+            " es " +
+            valorHablado +
+            "."
+          );
+
+        }
+
+
+        return;
+
+      }
+
+
+      // -----------------------------------------
+      // VARIAS RESPUESTAS
+      // -----------------------------------------
+
+      const valoresVisibles =
+        valores.join(
+          ", "
+        );
+
+
+      mostrarRespuestaContextual(
+        titulo,
+        valoresVisibles,
+        "Hay varios valores en el resultado anterior."
+      );
+
+
+      if (vieneDeVoz) {
+
+        if (
+          valores.length <= 5
+        ) {
+
+          const hablados =
+            valores.map(
+              function(valor) {
+
+                if (
+                  campo === "RUTA" ||
+                  campo === "UBICACION" ||
+                  campo === "PROVEEDOR" ||
+                  campo === "NUMERO"
+                ) {
+
+                  return decirCodigo(
+                    valor
+                  );
+
+                }
+
+
+                return valor;
+
+              }
+            );
+
+
+          hablar(
+            "Hay " +
+            valores.length +
+            " valores: " +
+            hablados.join(", ") +
+            "."
+          );
+
+        } else {
+
+          hablar(
+            "Hay varios resultados diferentes. Necesito que especifiques una ubicación."
+          );
+
+        }
+
+      }
+
+    }
+
+
+    // =====================================================
+    // MOSTRAR RESPUESTA CONTEXTUAL
+    // =====================================================
+
+    function mostrarRespuestaContextual(
+      titulo,
+      valor,
+      detalle
+    ) {
+
+      const contenedor =
+        document.getElementById(
+          "resultados"
+        );
+
+
+      contenedor.innerHTML = "";
+
+
+      const tarjeta =
+        document.createElement(
+          "div"
+        );
+
+
+      tarjeta.className =
+        "respuesta-contextual";
+
+
+      const tituloElemento =
+        document.createElement(
+          "div"
+        );
+
+
+      tituloElemento.className =
+        "respuesta-contextual-titulo";
+
+
+      tituloElemento.textContent =
+        titulo;
+
+
+      const valorElemento =
+        document.createElement(
+          "div"
+        );
+
+
+      valorElemento.className =
+        "respuesta-contextual-valor";
+
+
+      valorElemento.textContent =
+        valor;
+
+
+      tarjeta.appendChild(
+        tituloElemento
+      );
+
+
+      tarjeta.appendChild(
+        valorElemento
+      );
+
+
+      if (detalle) {
+
+        const detalleElemento =
+          document.createElement(
+            "div"
+          );
+
+
+        detalleElemento.className =
+          "respuesta-contextual-detalle";
+
+
+        detalleElemento.textContent =
+          detalle;
+
+
+        tarjeta.appendChild(
+          detalleElemento
+        );
+
+      }
+
+
+      contenedor.appendChild(
+        tarjeta
+      );
+
+    }
+
+
+    // =====================================================
     // DETECTAR CONTRA CATÁLOGO
     // =====================================================
 
@@ -1441,8 +2103,10 @@
       ) {
 
         return {
+
           tipo: "UBICACION",
           valor: ubicacion
+
         };
 
       }
@@ -1464,8 +2128,10 @@
       ) {
 
         return {
+
           tipo: "RUTA",
           valor: ruta
+
         };
 
       }
@@ -1481,8 +2147,10 @@
       if (proveedor) {
 
         return {
+
           tipo: "PROVEEDOR",
           valor: proveedor
+
         };
 
       }
@@ -1498,8 +2166,10 @@
       if (numero) {
 
         return {
+
           tipo: "NUMERO",
           valor: numero
+
         };
 
       }
@@ -1552,7 +2222,9 @@
       ) {
 
         const codigo =
-          String(lista[i])
+          String(
+            lista[i]
+          )
             .toUpperCase()
             .replace(
               /[^A-Z0-9]/g,
@@ -1614,7 +2286,9 @@
       if (mejor) {
 
         const longitud =
-          String(mejor)
+          String(
+            mejor
+          )
             .replace(
               /[^A-Z0-9]/g,
               ""
@@ -1629,7 +2303,8 @@
 
 
         if (
-          mejorPuntaje <= limite
+          mejorPuntaje <=
+          limite
         ) {
 
           return mejor;
@@ -2002,11 +2677,15 @@
 
 
       t =
-        convertidas.join(" ");
+        convertidas.join(
+          " "
+        );
 
 
       const partes =
-        t.split(" ");
+        t.split(
+          " "
+        );
 
 
       const resultado = [];
@@ -2066,6 +2745,7 @@
 
         vaciar();
 
+
         resultado.push(
           p
         );
@@ -2097,10 +2777,14 @@
     ) {
 
       a =
-        String(a || "");
+        String(
+          a || ""
+        );
 
       b =
-        String(b || "");
+        String(
+          b || ""
+        );
 
 
       const matriz = [];
@@ -2181,8 +2865,12 @@
       texto
     ) {
 
-      return String(texto)
-        .normalize("NFD")
+      return String(
+        texto
+      )
+        .normalize(
+          "NFD"
+        )
         .replace(
           /[\u0300-\u036f]/g,
           ""
@@ -2219,6 +2907,27 @@
         "none";
 
 
+      // También permitimos contexto
+      // mediante escritura.
+
+      const contextual =
+        detectarPreguntaContextual(
+          pregunta
+        );
+
+
+      if (contextual) {
+
+        responderPreguntaContextual(
+          contextual,
+          false
+        );
+
+        return;
+
+      }
+
+
       await consultarAPI(
         pregunta,
         false
@@ -2252,8 +2961,7 @@
         "Buscando...";
 
 
-      contenedor.innerHTML =
-        "";
+      contenedor.innerHTML = "";
 
 
       try {
@@ -2359,15 +3067,21 @@
         );
 
 
-        // GUARDAR EN HISTORIAL
+        // Guardamos búsqueda permanente
+        // en historial.
 
         guardarEnHistorial(
           datos
         );
 
 
-        // RESPUESTA HABLADA SOLO
-        // PARA CONSULTAS DE MICRÓFONO
+        // Guardamos resultado temporal
+        // para conversación.
+
+        guardarContexto(
+          datos
+        );
+
 
         if (vieneDeVoz) {
 
@@ -2407,7 +3121,7 @@
 
 
     // =====================================================
-    // RESPUESTA HABLADA
+    // RESPUESTA HABLADA DE BÚSQUEDA NORMAL
     // =====================================================
 
     function responderConVoz(
@@ -2418,7 +3132,9 @@
         !datos.resultados ||
         !datos.resultados.length
       ) {
+
         return;
+
       }
 
 
@@ -2438,10 +3154,6 @@
         );
 
 
-      // ===================================================
-      // UBICACIÓN
-      // ===================================================
-
       if (
         tipo === "UBICACION"
       ) {
@@ -2456,9 +3168,13 @@
 
           let frase =
             "En la ubicación " +
-            decirCodigo(r.ubicacion) +
+            decirCodigo(
+              r.ubicacion
+            ) +
             " se encuentra el proveedor " +
-            decirCodigo(r.proveedor) +
+            decirCodigo(
+              r.proveedor
+            ) +
             ".";
 
 
@@ -2466,7 +3182,9 @@
 
             frase +=
               " Ruta " +
-              decirCodigo(r.ruta) +
+              decirCodigo(
+                r.ruta
+              ) +
               ".";
 
           }
@@ -2482,7 +3200,10 @@
           }
 
 
-          hablar(frase);
+          hablar(
+            frase
+          );
+
 
           return;
 
@@ -2500,12 +3221,16 @@
 
               }
             )
-            .join(", ");
+            .join(
+              ", "
+            );
 
 
         hablar(
           "En la ubicación " +
-          decirCodigo(valor) +
+          decirCodigo(
+            valor
+          ) +
           " encontré " +
           resultados.length +
           " registros. " +
@@ -2518,10 +3243,6 @@
 
       }
 
-
-      // ===================================================
-      // PROVEEDOR / NÚMERO
-      // ===================================================
 
       if (
         tipo === "PROVEEDOR" ||
@@ -2599,10 +3320,6 @@
       }
 
 
-      // ===================================================
-      // RUTA
-      // ===================================================
-
       if (
         tipo === "RUTA"
       ) {
@@ -2620,7 +3337,9 @@
 
           hablar(
             "La ruta " +
-            decirCodigo(valor) +
+            decirCodigo(
+              valor
+            ) +
             " tiene " +
             ubicaciones.length +
             " ubicaciones: " +
@@ -2642,7 +3361,9 @@
           "Encontré " +
           ubicaciones.length +
           " ubicaciones para la ruta " +
-          decirCodigo(valor) +
+          decirCodigo(
+            valor
+          ) +
           ". Los resultados están en pantalla."
         );
 
@@ -2701,7 +3422,7 @@
 
 
     // =====================================================
-    // VALORES ÚNICOS
+    // OBTENER ÚNICOS
     // =====================================================
 
     function obtenerUnicos(
@@ -2736,6 +3457,19 @@
 
       return Array.from(
         valores
+      );
+
+    }
+
+
+    function obtenerValoresUnicos(
+      resultados,
+      campo
+    ) {
+
+      return obtenerUnicos(
+        resultados,
+        campo
       );
 
     }
@@ -2829,10 +3563,6 @@
 
     }
 
-
-    // =====================================================
-    // AGREGAR CAMPO
-    // =====================================================
 
     function agregarCampo(
       padre,
