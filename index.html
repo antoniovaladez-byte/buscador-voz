@@ -8,6 +8,7 @@
   <title>Buscador de Almacén</title>
 
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -17,6 +18,10 @@
       font-family: Arial, sans-serif;
       background: #eef2f7;
     }
+
+    /* =========================================
+       ENCABEZADO
+    ========================================= */
 
     .header {
       background: #003A8C;
@@ -35,11 +40,21 @@
       opacity: 0.9;
     }
 
+
+    /* =========================================
+       CONTENEDOR PRINCIPAL
+    ========================================= */
+
     .container {
       max-width: 1000px;
       margin: auto;
       padding: 25px;
     }
+
+
+    /* =========================================
+       BUSCADOR
+    ========================================= */
 
     .buscador {
       background: white;
@@ -77,12 +92,22 @@
       background: #002d6e;
     }
 
+
+    /* =========================================
+       ESTADO
+    ========================================= */
+
     #estado {
       margin-top: 20px;
       text-align: center;
       font-size: 18px;
       color: #666;
     }
+
+
+    /* =========================================
+       TARJETAS DE RESULTADOS
+    ========================================= */
 
     .resultado {
       background: white;
@@ -93,11 +118,17 @@
       box-shadow: 0 3px 10px rgba(0,0,0,.08);
     }
 
+
+    /* UBICACIÓN */
+
     .ubicacion {
       font-size: 42px;
       font-weight: 900;
       color: #003A8C;
     }
+
+
+    /* PROVEEDOR */
 
     .proveedor {
       font-size: 26px;
@@ -105,13 +136,31 @@
       margin-top: 10px;
     }
 
+
+    /* INFORMACIÓN OPERATIVA */
+
     .detalle {
       font-size: 20px;
       margin-top: 6px;
     }
 
+
+    /* FECHA - INFORMACIÓN ADMINISTRATIVA */
+
+    .fecha {
+      font-size: 13px;
+      color: #888;
+      margin-top: 14px;
+      font-weight: normal;
+    }
+
+
+    /* =========================================
+       ERROR
+    ========================================= */
+
     .error {
-      background: #fff;
+      background: white;
       padding: 20px;
       margin-top: 20px;
       border-radius: 15px;
@@ -120,7 +169,13 @@
       text-align: center;
     }
 
+
+    /* =========================================
+       CELULAR / TABLET
+    ========================================= */
+
     @media(max-width: 700px) {
+
       .buscador {
         flex-direction: column;
       }
@@ -128,20 +183,42 @@
       button {
         width: 100%;
       }
+
     }
+
   </style>
+
 </head>
 
 
 <body>
 
+
+  <!-- =========================================
+       ENCABEZADO
+  ========================================== -->
+
   <div class="header">
-    <h1>BUSCADOR DE UBICACIONES</h1>
-    <p>Proveedores • Rutas • Ubicaciones</p>
+
+    <h1>
+      BUSCADOR DE UBICACIONES
+    </h1>
+
+    <p>
+      Proveedores • Rutas • Ubicaciones
+    </p>
+
   </div>
 
 
+  <!-- =========================================
+       CONTENIDO
+  ========================================== -->
+
   <div class="container">
+
+
+    <!-- BUSCADOR -->
 
     <div class="buscador">
 
@@ -149,6 +226,7 @@
         id="pregunta"
         type="text"
         placeholder="Ejemplo: ¿Qué hay en C4?"
+        autocomplete="off"
       >
 
       <button onclick="buscar()">
@@ -158,91 +236,138 @@
     </div>
 
 
+    <!-- ESTADO -->
+
     <div id="estado"></div>
 
+
+    <!-- RESULTADOS -->
+
     <div id="resultados"></div>
+
 
   </div>
 
 
   <script>
 
+
+    // =========================================
+    // API DE GOOGLE APPS SCRIPT
+    // =========================================
+
     const API_URL =
       "https://script.google.com/macros/s/AKfycbwTizMnhtFdTiui-k3kQ0K658BwcQL_zocdSlbP15Qsj8NMuZ5D2gc1uarXV2DwuOtv/exec";
 
 
-    // ==================================================
+    // =========================================
     // ENTER PARA BUSCAR
-    // ==================================================
+    // =========================================
 
     document
       .getElementById("pregunta")
-      .addEventListener("keydown", function(event) {
+      .addEventListener(
+        "keydown",
+        function(event) {
 
-        if (event.key === "Enter") {
-          buscar();
+          if (event.key === "Enter") {
+
+            buscar();
+
+          }
+
         }
+      );
 
-      });
 
-
-    // ==================================================
-    // BUSCAR
-    // ==================================================
+    // =========================================
+    // FUNCIÓN PRINCIPAL DE BÚSQUEDA
+    // =========================================
 
     async function buscar() {
 
+
       const input =
-        document.getElementById("pregunta");
+        document.getElementById(
+          "pregunta"
+        );
+
 
       const pregunta =
         input.value.trim();
 
+
       const estado =
-        document.getElementById("estado");
+        document.getElementById(
+          "estado"
+        );
+
 
       const contenedor =
-        document.getElementById("resultados");
+        document.getElementById(
+          "resultados"
+        );
 
+
+      // No hacer nada si está vacío
 
       if (!pregunta) {
+
         return;
+
       }
 
 
       estado.textContent =
         "Buscando...";
 
-      contenedor.innerHTML = "";
+
+      contenedor.innerHTML =
+        "";
 
 
       try {
 
+
+        // Construir URL de consulta
+
         const url =
           API_URL +
           "?q=" +
-          encodeURIComponent(pregunta);
+          encodeURIComponent(
+            pregunta
+          );
 
+
+        // Consultar Apps Script
 
         const respuesta =
           await fetch(url);
 
 
+        // Comprobar respuesta HTTP
+
         if (!respuesta.ok) {
 
           throw new Error(
-            "Error HTTP: " + respuesta.status
+            "Error HTTP: " +
+            respuesta.status
           );
 
         }
 
 
+        // Convertir respuesta a JSON
+
         const datos =
           await respuesta.json();
 
 
-        estado.textContent = "";
+        estado.textContent =
+          "";
 
+
+        // Error devuelto por API
 
         if (!datos.ok) {
 
@@ -252,8 +377,11 @@
           );
 
           return;
+
         }
 
+
+        // Sin resultados
 
         if (!datos.encontrado) {
 
@@ -262,105 +390,152 @@
           );
 
           return;
+
         }
 
 
-        mostrarResultados(datos);
+        // Mostrar resultados
+
+        mostrarResultados(
+          datos
+        );
 
 
       } catch (error) {
 
-        estado.textContent = "";
+
+        estado.textContent =
+          "";
+
 
         mostrarError(
           "No fue posible consultar la base de datos."
         );
 
-        console.error(error);
+
+        console.error(
+          error
+        );
+
 
       }
 
     }
 
 
-    // ==================================================
+    // =========================================
     // MOSTRAR RESULTADOS
-    // ==================================================
+    // =========================================
 
-    function mostrarResultados(datos) {
+    function mostrarResultados(
+      datos
+    ) {
+
 
       const contenedor =
-        document.getElementById("resultados");
-
-
-      datos.resultados.forEach(function(r) {
-
-        const tarjeta =
-          document.createElement("div");
-
-        tarjeta.className =
-          "resultado";
-
-
-        agregarCampo(
-          tarjeta,
-          r.ubicacion,
-          "ubicacion"
+        document.getElementById(
+          "resultados"
         );
 
 
-        agregarCampo(
-          tarjeta,
-          r.proveedor,
-          "proveedor"
-        );
+      datos.resultados.forEach(
+        function(r) {
 
 
-        agregarCampo(
-          tarjeta,
-          "Proveedor #" + r.numeroProveedor,
-          "detalle"
-        );
+          // Crear tarjeta
+
+          const tarjeta =
+            document.createElement(
+              "div"
+            );
 
 
-        agregarCampo(
-          tarjeta,
-          "🚛 Ruta: " + r.ruta,
-          "detalle"
-        );
+          tarjeta.className =
+            "resultado";
 
 
-        agregarCampo(
-          tarjeta,
-          "📦 Máximo: " + r.maximo,
-          "detalle"
-        );
-
-
-        if (r.fechaActualizacion) {
+          // UBICACIÓN
 
           agregarCampo(
             tarjeta,
-            "🕒 Actualizado: " +
-              r.fechaActualizacion,
+            r.ubicacion,
+            "ubicacion"
+          );
+
+
+          // PROVEEDOR
+
+          agregarCampo(
+            tarjeta,
+            r.proveedor,
+            "proveedor"
+          );
+
+
+          // NÚMERO DE PROVEEDOR
+
+          agregarCampo(
+            tarjeta,
+            "Proveedor #" +
+            r.numeroProveedor,
             "detalle"
           );
 
+
+          // RUTA
+
+          agregarCampo(
+            tarjeta,
+            "🚛 Ruta: " +
+            r.ruta,
+            "detalle"
+          );
+
+
+          // MÁXIMO POR UBICACIÓN
+
+          agregarCampo(
+            tarjeta,
+            "📦 Máximo: " +
+            r.maximo,
+            "detalle"
+          );
+
+
+          // FECHA DE ACTUALIZACIÓN
+          // Se muestra pequeña porque es
+          // información administrativa.
+
+          if (
+            r.fechaActualizacion
+          ) {
+
+            agregarCampo(
+              tarjeta,
+              "Última actualización: " +
+              r.fechaActualizacion,
+              "fecha"
+            );
+
+          }
+
+
+          // Agregar tarjeta a pantalla
+
+          contenedor.appendChild(
+            tarjeta
+          );
+
+
         }
-
-
-        contenedor.appendChild(
-          tarjeta
-        );
-
-      });
+      );
 
     }
 
 
-    // ==================================================
+    // =========================================
     // CREAR CAMPOS DE FORMA SEGURA
-    // ==================================================
+    // =========================================
 
     function agregarCampo(
       padre,
@@ -368,51 +543,72 @@
       clase
     ) {
 
+
       const elemento =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
+
 
       elemento.className =
         clase;
 
+
       elemento.textContent =
         texto || "";
+
 
       padre.appendChild(
         elemento
       );
 
+
     }
 
 
-    // ==================================================
-    // ERROR
-    // ==================================================
+    // =========================================
+    // MOSTRAR ERROR
+    // =========================================
 
-    function mostrarError(mensaje) {
+    function mostrarError(
+      mensaje
+    ) {
+
 
       const contenedor =
         document.getElementById(
           "resultados"
         );
 
-      contenedor.innerHTML = "";
+
+      contenedor.innerHTML =
+        "";
+
 
       const error =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
+
 
       error.className =
         "error";
 
+
       error.textContent =
         mensaje;
+
 
       contenedor.appendChild(
         error
       );
 
+
     }
 
+
   </script>
+
 
 </body>
 
